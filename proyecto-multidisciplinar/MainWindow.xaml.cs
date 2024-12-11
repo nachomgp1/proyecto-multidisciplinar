@@ -30,10 +30,23 @@ namespace proyecto_multidisciplinar
 
             if (ValidateUser(username, password))
             {
+                int typePermission = ObtainUserPermissions(username);
 
-                view.PrincipalMenuAdmin viewPrincipalMenuAdmin = new view.PrincipalMenuAdmin(username);
-                viewPrincipalMenuAdmin.Show();
-                this.Close();
+                //Its an administrator
+                if (typePermission == 3)
+                {
+                    view.PrincipalMenuAdmin viewPrincipalMenuAdmin = new view.PrincipalMenuAdmin(username);
+                    viewPrincipalMenuAdmin.Show();
+                    this.Close();
+                }
+
+                //Its an standard user
+                else if (typePermission == 1)
+                {
+                    view.PrincipalMenuStandardUser viewPrincipalMenuUser = new view.PrincipalMenuStandardUser(username);
+                    viewPrincipalMenuUser.Show();
+                    this.Close();
+                }
             }
         }
 
@@ -49,13 +62,13 @@ namespace proyecto_multidisciplinar
 
                 NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser, paramPassword);
 
-                if (reader.Read() && reader.GetInt32(0)>0 )
+                if (reader.Read() && reader.GetInt32(0) > 0)
                 {
-                    MessageBox.Show("Login exitoso");
+                    MessageBox.Show("Successful log in");
                 }
                 else
                 {
-                    MessageBox.Show("Usuario o contraseña no válidos");
+                    MessageBox.Show("Invalid username or password");
                     return false;
                 }
 
@@ -63,8 +76,8 @@ namespace proyecto_multidisciplinar
                 conexion.CerrarConexion();
 
             }
-            
-           
+
+
             return true;
         }
 
@@ -72,6 +85,42 @@ namespace proyecto_multidisciplinar
         {
             Application.Current.Shutdown();
 
+        }
+
+        private static int ObtainUserPermissions(string username)
+        {
+            Conexion conexion = new Conexion();
+            int typePermission = 0;
+
+            if (conexion.AbrirConexion())
+            {
+                string query = "SELECT type FROM \"Users\" where name = @username";
+
+                NpgsqlParameter paramUser = new NpgsqlParameter("@username", username);
+
+                NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser);
+
+                if (reader.Read()){
+                    typePermission = reader.GetInt32(0);
+                }
+                else
+                {
+                    MessageBox.Show("The user is not assigned permissions");
+                    
+
+                }
+
+                reader.Close();
+                conexion.CerrarConexion();
+
+            }
+            else
+            {
+                MessageBox.Show("Failed to connect to database");
+            }
+            return typePermission;
+            
+            
         }
     }
 }

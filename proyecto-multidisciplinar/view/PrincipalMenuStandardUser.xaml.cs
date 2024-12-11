@@ -15,18 +15,16 @@ using System.Windows.Shapes;
 namespace proyecto_multidisciplinar.view
 {
     
-    public partial class PrincipalMenuAdmin : Window
+    public partial class PrincipalMenuStandardUser : Window
     {
         private string username;
-        public PrincipalMenuAdmin(string username)
+        public PrincipalMenuStandardUser(string username)
         {
             InitializeComponent();
 
             this.username = username;
 
             usernameLabel.Content = "Logged user:" + " " + username;
-
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
