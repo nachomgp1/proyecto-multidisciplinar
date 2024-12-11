@@ -38,4 +38,8 @@ public partial class ViewFtpAdmin : Window
         
     }
 
+    private void AccionLogs(object sender, RoutedEventArgs e)
+    {
+        
+    }
 }

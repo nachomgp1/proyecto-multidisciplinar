@@ -82,8 +82,8 @@
     <Button Content="Exit"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Margin="0,0,20,20"
-            Width="100"
+            Margin="0,0,120,20"
+            Width="80"
             Background="#FAD6A5"
             Foreground="Black"
             FontSize="14"
@@ -91,5 +91,17 @@
             BorderThickness="0"
             Click="AccionSalida"
              />
+    <Button Content="Logs"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,20,20"
+            Width="80"
+            Background="#FAD6A5"
+            Foreground="Black"
+            FontSize="14"
+            FontWeight="Bold"
+            BorderThickness="0"
+            Click="AccionLogs"
+    />
 </Grid>
 </Window>
