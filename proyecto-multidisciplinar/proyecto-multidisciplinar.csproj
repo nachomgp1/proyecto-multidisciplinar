@@ -11,9 +11,13 @@
 
   <ItemGroup>
     <Compile Remove="view\**" />
+    <Compile Include="view\ViewFtpAdmin.xaml.cs" />
+    <Compile Include="view\ViewFtpUser.xaml.cs" />
     <EmbeddedResource Remove="view\**" />
     <None Remove="view\**" />
     <Page Remove="view\**" />
+    <Page Include="view\ViewFtpAdmin.xaml" />
+    <Page Include="view\ViewFtpUser.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="controller\" />
-    <Folder Include="view\" />
   </ItemGroup>
 
   <ItemGroup>
