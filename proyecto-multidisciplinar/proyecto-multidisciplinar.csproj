@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="controller\" />
+    <Folder Include="view\" />
   </ItemGroup>
 
   <ItemGroup>
