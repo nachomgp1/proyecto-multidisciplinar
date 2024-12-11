@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FTPHelper" Version="1.0.3" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
   </ItemGroup>
 
