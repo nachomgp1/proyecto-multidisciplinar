@@ -14,14 +14,25 @@ using System.Windows.Shapes;
 
 namespace proyecto_multidisciplinar.view
 {
-    /// <summary>
-    /// Lógica de interacción para PrincipalMenuAdmin.xaml
-    /// </summary>
+    
     public partial class PrincipalMenuAdmin : Window
     {
-        public PrincipalMenuAdmin()
+        private string username;
+        public PrincipalMenuAdmin(string username)
         {
             InitializeComponent();
+
+            this.username = username;
+            usernameLabel.Content = "Logged user:" + " " + username;
+
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            this.Close();
+            mainWindow.Show();
         }
     }
 }

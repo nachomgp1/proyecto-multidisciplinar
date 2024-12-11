@@ -28,8 +28,13 @@ namespace proyecto_multidisciplinar
             string username = userTextBox.Text;
             string password = passwordTextBox.Password;
 
-            ValidateUser(username, password);
+            if (ValidateUser(username, password))
+            {
 
+                view.PrincipalMenuAdmin viewPrincipalMenuAdmin = new view.PrincipalMenuAdmin(username);
+                viewPrincipalMenuAdmin.Show();
+                this.Close();
+            }
         }
 
         private static bool ValidateUser(string username, string password)
