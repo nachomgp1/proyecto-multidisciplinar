@@ -17,6 +17,7 @@ namespace proyecto_multidisciplinar
     public partial class MainWindow : Window
     {
 
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -29,6 +30,11 @@ namespace proyecto_multidisciplinar
             string password = passwordTextBox.Password;
 
             ValidateUser(username, password);
+            view.ViewFtpUser view = new view.ViewFtpUser(username);
+            view.ViewFtpAdmin viewAdmin = new view.ViewFtpAdmin(username); 
+            //viewAdmin.Show();
+            view.Show();
+            this.Close();
 
         }
 

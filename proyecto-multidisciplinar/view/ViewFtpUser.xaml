@@ -7,8 +7,19 @@
         mc:Ignorable="d"
         Title="ViewFtpUser" Height="450" Width="800">
 <Grid>
-    <!-- Header Section with Buttons -->
-    <StackPanel Orientation="Horizontal"
+        <Label
+                x:Name="usernameLabel"
+                Margin="600,0,0,0"
+                Padding="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Center"
+                Content=""
+                FontSize="16"
+                Foreground="Gray" />
+        <!-- Header Section with Buttons -->
+    <StackPanel 
+                Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Margin="0,20,0,0">
@@ -47,16 +58,32 @@
                  />
     </StackPanel>
 
+            
+            <ContentControl x:Name="ContentPrincipal"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Margin="30,80,30,50"
+                            Background="#F9F9F9"
+                            BorderBrush="#CCCCCC"
+                            BorderThickness="1">
+                    
+                    <StackPanel x:Name="BotonesFunciones"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top">
+                            <StackPanel x:Name="FuncionPrincipal"
+                                        Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Margin="0,10, 0, 0">
+                            </StackPanel>
+                    </StackPanel>
+            
+                    <!-- Default Content -->
+            </ContentControl>
+
     <!-- Dynamic Content Section -->
-    <ContentControl x:Name="DynamicContent"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Margin="30,80,30,50"
-                    Background="#F9F9F9"
-                    BorderBrush="#CCCCCC"
-                    BorderThickness="1">
-        <!-- Default Content -->
-    </ContentControl>
+    
 
     <!-- Exit Button -->
     <Button Content="Exit"
