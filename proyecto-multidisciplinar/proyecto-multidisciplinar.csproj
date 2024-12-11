@@ -10,7 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="view\**" />
+    <EmbeddedResource Remove="view\**" />
+    <None Remove="view\**" />
+    <Page Remove="view\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="images\imagedef.jpg" />
+    <None Remove="images\sol2.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +34,7 @@
     <Resource Include="images\imagedef.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\sol2.jpg" />
   </ItemGroup>
 
 </Project>
