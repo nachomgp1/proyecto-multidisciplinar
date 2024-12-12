@@ -11,6 +11,12 @@ public class ControlFtp
     private string ftpServer;
     private string username;
     private string password;
+    // Diccionario para gestionar permisos por grupo
+    private Dictionary<string, List<string>> permisosPorGrupo = new Dictionary<string, List<string>>();
+
+    // Diccionario para gestionar permisos individuales de usuarios
+    private Dictionary<string, Dictionary<string, string>> permisosIndividuales = new Dictionary<string, Dictionary<string, string>>();
+
     
     public ControlFtp(string ftpServer, string username, string password)
     {
@@ -68,6 +74,7 @@ public class ControlFtp
         }
     }
 
+    // Descagar fichero
     public void DownloadFile(string remoteFilePath, string localFilePath)
     {
         FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{ftpServer}/{remoteFilePath}");
@@ -82,6 +89,7 @@ public class ControlFtp
         }
     }
     
+    // Renombrar ficheros
     public void RenameFile(string oldFilePath, string newFilePath)
     {
         try
@@ -102,6 +110,7 @@ public class ControlFtp
         }
     }
     
+    // Listar ficheros
     public List<string> ListFiles(string remoteDirectory)
     {
         List<string> files = new List<string>();
@@ -195,6 +204,7 @@ public class ControlFtp
     }
     
     
+    // Obtener los permisos que tenemos 
     public static Dictionary<string, string> ObtenerPermisos(string rutaBase)
     {
         Dictionary<string, string> permisos = new Dictionary<string, string>();
@@ -207,10 +217,7 @@ public class ControlFtp
             if (conexion.AbrirConexion())
             {
                 // Consulta para obtener los permisos de los directorios bajo la ruta base
-                string query = @"
-                SELECT Ruta, Permisos 
-                FROM Permisos 
-                WHERE Ruta LIKE @RutaBase || '%';";
+                string query = @"SELECT Ruta, Permisos FROM Permisos WHERE Ruta LIKE @RutaBase || '%';";
 
                 // Creamos el parámetro para la ruta base
                 NpgsqlParameter parametroRuta = new NpgsqlParameter("@RutaBase", NpgsqlTypes.NpgsqlDbType.Varchar);
@@ -243,6 +250,7 @@ public class ControlFtp
         return permisos;
     }
     
+    // Visualizar jerarquia archivos
     public TreeViewItem CrearNodoJerarquia(string remotePath)
     {
         TreeViewItem nodo = new TreeViewItem
@@ -306,5 +314,132 @@ public class ControlFtp
         return nodo;
     }
     
+        // Método para obtener el tamaño total de una carpeta en el FTP
+    public long ObtenerTamañoCarpeta(string remotePath)
+    {
+        long totalSize = 0;
+        try
+        {
+            List<string> archivos = ListFiles(remotePath); // Obtener lista de archivos en el directorio
+            foreach (var archivo in archivos)
+            {
+                totalSize += ObtenerTamañoArchivo(remotePath + "/" + archivo);  // Sumar el tamaño de cada archivo
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al obtener el tamaño de la carpeta: {ex.Message}");
+        }
+        return totalSize;
+    }
+
+    // Método para obtener el tamaño de un archivo en el FTP
+    public long ObtenerTamañoArchivo(string remoteFilePath)
+    {
+        long fileSize = 0;
+        try
+        {
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"{ftpServer}/{remoteFilePath}"));
+            request.Method = WebRequestMethods.Ftp.GetFileSize;
+            request.Credentials = new NetworkCredential(username, password);
+
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            {
+                fileSize = response.ContentLength;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al obtener el tamaño del archivo: {ex.Message}");
+        }
+        return fileSize;
+    }
+
+    
+    // Método para modificar el límite de una carpeta (esto es conceptual, ya que FTP no tiene límites directos)
+    public void ModificarLimite(string remotePath, long newLimit)
+    {
+        // Aquí se realizaría la lógica para modificar el límite, pero FTP en sí no soporta límites directamente.
+        // Es probable que esta función requiera un sistema de base de datos o algún mecanismo para hacer seguimiento.
+    }
+    
+    // Método para añadir un grupo y asignarle carpetas
+    public void AsignarPermisosGrupo(string grupo, List<string> carpetas)
+    {
+        if (!permisosPorGrupo.ContainsKey(grupo))
+        {
+            permisosPorGrupo[grupo] = new List<string>();
+        }
+
+        foreach (var carpeta in carpetas)
+        {
+            if (!permisosPorGrupo[grupo].Contains(carpeta))
+            {
+                permisosPorGrupo[grupo].Add(carpeta);
+            }
+        }
+    }
+    // Método para asignar permisos individuales a un usuario para carpetas específicas
+    public void AsignarPermisosUsuario(string usuario, string carpeta, string permiso)
+    {
+        if (!permisosIndividuales.ContainsKey(usuario))
+        {
+            permisosIndividuales[usuario] = new Dictionary<string, string>();
+        }
+
+        permisosIndividuales[usuario][carpeta] = permiso;
+    }
+    
+    // Método para verificar si un usuario tiene acceso a una carpeta
+    public bool VerificarAcceso(string usuario, string carpeta)
+    {
+        // Verificar si el usuario tiene permisos individuales
+        if (permisosIndividuales.ContainsKey(usuario) && permisosIndividuales[usuario].ContainsKey(carpeta))
+        {
+            return true;  // Tiene acceso
+        }
+
+        // Verificar si el usuario pertenece a un grupo con acceso a la carpeta
+        foreach (var grupo in permisosPorGrupo)
+        {
+            if (grupo.Value.Contains(carpeta) && UsuarioPerteneceAGrupo(usuario, grupo.Key))
+            {
+                return true;  // El grupo tiene acceso
+            }
+        }
+
+        return false;  // No tiene acceso
+    }
+
+    // Método para simular que un usuario pertenece a un grupo
+    private bool UsuarioPerteneceAGrupo(string usuario, string grupo)
+    {
+        // Este método simula que el usuario pertenece a un grupo, puedes adaptarlo a tus necesidades
+        // Podrías consultar una base de datos o realizar otra lógica para determinarlo
+        return true;  // Supongamos que todos los usuarios pertenecen a todos los grupos por ahora
+    }
+
+    // Método para mostrar los permisos
+    public void MostrarPermisos()
+    {
+        foreach (var grupo in permisosPorGrupo)
+        {
+            Console.WriteLine($"Grupo: {grupo.Key}");
+            foreach (var carpeta in grupo.Value)
+            {
+                Console.WriteLine($"  - Permiso para carpeta: {carpeta}");
+            }
+        }
+
+        foreach (var usuario in permisosIndividuales)
+        {
+            Console.WriteLine($"Usuario: {usuario.Key}");
+            foreach (var carpetaPermiso in usuario.Value)
+            {
+                Console.WriteLine($"  - Permiso para carpeta: {carpetaPermiso.Key} = {carpetaPermiso.Value}");
+            }
+        }
+    }
+
    
 }

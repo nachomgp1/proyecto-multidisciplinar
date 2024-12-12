@@ -38,6 +38,11 @@ public partial class ViewFtpUser : Window
         BotonesFunciones.Children.Clear();
         Funcion.Children.Clear();
         crearBotonesFichero();
+        
+        botonesFicheros[0].Click += AccionSubirFichero;
+        botonesFicheros[1].Click += AccionDescargar;
+        botonesFicheros[2].Click += AccionEliminar;
+        botonesFicheros[3].Click += AccionRenombrar;
     }
 
 
@@ -47,14 +52,17 @@ public partial class ViewFtpUser : Window
         BotonesFunciones.Children.Clear();
         Funcion.Children.Clear();
         crearBotonesDirectorio();
+        
+        botonesDirectorio[0].Click += AccionCrearDirectorio;
+        botonesDirectorio[1].Click += AccionEliminarDirectorio;
+        botonesDirectorio[2].Click += AccionAccesoCarpeta;
     }
 
 
     public void AccionConsultas(object sender, RoutedEventArgs e)
     {
         BotonesFunciones.Children.Clear(); 
-        // Limpiar los controles de la interfaz si ya hay algo cargado
-        Funcion.Children.Clear();
+        Funcion.Children.Clear(); // Limpiar los controles de la interfaz si ya hay algo cargado
 
         // Crear un TreeView para mostrar la jerarquía
         TreeView jerarquiaTreeView = new TreeView()
@@ -64,46 +72,30 @@ public partial class ViewFtpUser : Window
             Height = 300
         };
 
-        // Botón para cargar la jerarquía
-        Button cargarJerarquiaButton = new Button()
-        {
-            Content = "Cargar Jerarquía",
-            Width = 150,
-            Margin = new Thickness(10)
-        };
+        Funcion.Children.Add(jerarquiaTreeView); // Agregar el TreeView directamente a la interfaz
 
         var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
-        
-        
-        cargarJerarquiaButton.Click += (s, ev) =>
+
+        try
         {
-            try
-            {
-                jerarquiaTreeView.Items.Clear(); // Limpiar el TreeView antes de cargar nuevos datos
+            // Crear el nodo raíz con el directorio inicial
+            var raizNode = ftp.CrearNodoJerarquia(userDirectory);
 
-                // Crear el nodo raíz con el directorio inicial
-                var raizNode = ftp.CrearNodoJerarquia(userDirectory);
-
-                // Agregar el nodo raíz al TreeView
-                jerarquiaTreeView.Items.Add(raizNode);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar la jerarquía: {ex.Message}");
-            }
-        };
-
-        // Agregar controles a la interfaz
-        Funcion.Children.Add(jerarquiaTreeView);
-        Funcion.Children.Add(cargarJerarquiaButton);
+            // Agregar el nodo raíz al TreeView
+            jerarquiaTreeView.Items.Add(raizNode);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al cargar la jerarquía: {ex.Message}");
+        }
     }
+
 
     public void AccionSalida(object sender, RoutedEventArgs e)
     {
         MainWindow mainWindow = new MainWindow();
         this.Close();
         mainWindow.Show();
-
     }
     
     /**
@@ -418,6 +410,7 @@ public partial class ViewFtpUser : Window
      * Funciones de los botones de Directorio
      */
 
+    // Accion crear directorio 
     public void AccionCrearDirectorio(object sender, RoutedEventArgs e)
     {
         // Limpiar los controles de la interfaz si ya hay algo cargado
@@ -516,6 +509,7 @@ public partial class ViewFtpUser : Window
         Funcion.Children.Add(crearCarpetaButton);
     }
     
+    // Accion eleminar directorio 
     public void AccionEliminarDirectorio(object sender, RoutedEventArgs e)
 {
     // Limpiar los controles de la interfaz si ya hay algo cargado
@@ -631,6 +625,8 @@ public partial class ViewFtpUser : Window
     Funcion.Children.Add(eliminarCarpetaButton);
 }
     
+    
+    // Accion acceso
 public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
 {
     // Limpiar los controles de la interfaz si ya hay algo cargado
@@ -774,10 +770,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
             BorderThickness = new Thickness(0),
         });
         
-        botonesFicheros[0].Click += AccionSubirFichero;
-        botonesFicheros[1].Click += AccionDescargar;
-        botonesFicheros[2].Click += AccionEliminar;
-        botonesFicheros[3].Click += AccionRenombrar;
+
         
         BotonesFunciones.Children.Add(botonesFicheros[0]);
         BotonesFunciones.Children.Add(botonesFicheros[1]);
@@ -823,9 +816,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
             BorderThickness = new Thickness(0),
         });
         
-        botonesDirectorio[0].Click += AccionCrearDirectorio;
-        botonesDirectorio[1].Click += AccionEliminarDirectorio;
-        botonesDirectorio[2].Click += AccionAccesoCarpeta;
+        
             
             BotonesFunciones.Children.Add(botonesDirectorio[0]);
             BotonesFunciones.Children.Add(botonesDirectorio[1]);

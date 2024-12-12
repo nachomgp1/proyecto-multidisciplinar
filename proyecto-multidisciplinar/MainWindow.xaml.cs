@@ -33,7 +33,7 @@ namespace proyecto_multidisciplinar
             view.ViewFtpUser view = new view.ViewFtpUser(username);
             view.ViewFtpAdmin viewAdmin = new view.ViewFtpAdmin(username); 
             //viewAdmin.Show();
-            view.Show();
+            viewAdmin.Show();
             this.Close();
 
         }

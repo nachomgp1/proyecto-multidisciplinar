@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using proyecto_multidisciplinar.model;
 
@@ -10,6 +11,7 @@ public partial class ViewFtpAdmin : Window
 {
     private string  username;
     private List<Button> botones =new List<Button>();
+    private List<Button> botonesDirectorio = new List<Button>();
 
     private string FtpUrl = "ftp://185.27.134.11";
     private string FtpUser = "if0_37886491";
@@ -30,31 +32,271 @@ public partial class ViewFtpAdmin : Window
         botones[0].Click += AccionSubirFichero;
         botones[1].Click += AccionDescargar;
         botones[2].Click += AccionEliminar;
-        botones[3].Click += AccionConsultar;
+        botones[3].Click += AccionRenombrar;
     }
     public void AccionDirectorio(object sender, RoutedEventArgs e)
     {
         BotonesFunciones.Children.Clear();
         Funcion.Children.Clear();
+        crearBotonesDirectorio();
+        botonesDirectorio[0].Click += AccionCrearDirectorio;
+        botonesDirectorio[1].Click += AccionEliminarDirectorio;
+        botonesDirectorio[2].Click += AccionAccesoCarpeta;
     }    
     
     
     public void AccionConsultas(object sender, RoutedEventArgs e)
     {
-        BotonesFunciones.Children.Clear();
-        Funcion.Children.Clear();
+        BotonesFunciones.Children.Clear(); 
+        Funcion.Children.Clear(); // Limpiar los controles de la interfaz si ya hay algo cargado
+
+        // Crear un TreeView para mostrar la jerarquía
+        TreeView jerarquiaTreeView = new TreeView()
+        {
+            Margin = new Thickness(10),
+            Width = 400,
+            Height = 300
+        };
+
+        Funcion.Children.Add(jerarquiaTreeView); // Agregar el TreeView directamente a la interfaz
+
+        var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+
+        try
+        {
+            // Crear el nodo raíz con el directorio inicial
+            var raizNode = ftp.CrearNodoJerarquia("/");
+
+            // Agregar el nodo raíz al TreeView
+            jerarquiaTreeView.Items.Add(raizNode);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al cargar la jerarquía: {ex.Message}");
+        }
     }
     
     private void AccionPermisos(object sender, RoutedEventArgs e)
     {
-        BotonesFunciones.Children.Clear();
-        Funcion.Children.Clear();
+        BotonesFunciones.Children.Clear(); 
+    Funcion.Children.Clear(); // Limpiar los controles de la interfaz si ya hay algo cargado
+
+    // Crear la interfaz para gestionar permisos
+    StackPanel gestionPanel = new StackPanel
+    {
+        Orientation = Orientation.Vertical,
+        Margin = new Thickness(10)
+    };
+
+    // Crear la etiqueta para el ComboBox de grupo
+    Label grupoLabel = new Label
+    {
+        Content = "Selecciona un Grupo",
+        Margin = new Thickness(10)
+    };
+
+    // Crear ComboBox para seleccionar un grupo
+    ComboBox grupoComboBox = new ComboBox
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+    grupoComboBox.Items.Add("Departamento A");
+    grupoComboBox.Items.Add("Departamento B");
+
+    // Crear la etiqueta para el ComboBox de usuario
+    Label usuarioLabel = new Label
+    {
+        Content = "Selecciona un Usuario",
+        Margin = new Thickness(10)
+    };
+
+    // Crear ComboBox para seleccionar usuario (se cargan los usuarios de las carpetas)
+    ComboBox usuarioComboBox = new ComboBox
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+
+    // Aquí puedes cargar los usuarios. Suponemos que tienes una lista de usuarios, por ejemplo:
+    usuarioComboBox.Items.Add("Juan");
+    usuarioComboBox.Items.Add("Pedro");
+    usuarioComboBox.Items.Add("Ana");
+
+    // Crear la etiqueta para el ComboBox de carpetas
+    Label carpetaLabel = new Label
+    {
+        Content = "Selecciona una Carpeta",
+        Margin = new Thickness(10)
+    };
+
+    // Crear ComboBox para seleccionar carpeta
+    ComboBox carpetaComboBox = new ComboBox
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+    carpetaComboBox.Items.Add("Carpeta A");
+    carpetaComboBox.Items.Add("Carpeta B");
+
+    // Crear Button para asignar permisos
+    Button asignarPermisosButton = new Button
+    {
+        Content = "Asignar Permisos",
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    asignarPermisosButton.Click += (s, args) =>
+    {
+        string grupoSeleccionado = (string)grupoComboBox.SelectedItem;
+        string usuarioSeleccionado = (string)usuarioComboBox.SelectedItem;
+        string carpetaSeleccionada = (string)carpetaComboBox.SelectedItem;
+
+        if (!string.IsNullOrEmpty(grupoSeleccionado) && !string.IsNullOrEmpty(usuarioSeleccionado) && !string.IsNullOrEmpty(carpetaSeleccionada))
+        {
+            // Asignar permisos de grupo
+            ftp.AsignarPermisosGrupo(grupoSeleccionado, new List<string> { carpetaSeleccionada });
+
+            // Asignar permisos individuales
+            ftp.AsignarPermisosUsuario(usuarioSeleccionado, carpetaSeleccionada, "lectura"); // Puedes cambiar el permiso ("lectura", "escritura")
+        }
+    };
+
+    // Agregar todos los controles al panel
+    gestionPanel.Children.Add(grupoLabel);
+    gestionPanel.Children.Add(grupoComboBox);
+    gestionPanel.Children.Add(usuarioLabel);
+    gestionPanel.Children.Add(usuarioComboBox);
+    gestionPanel.Children.Add(carpetaLabel);
+    gestionPanel.Children.Add(carpetaComboBox);
+    gestionPanel.Children.Add(asignarPermisosButton);
+
+    Funcion.Children.Add(gestionPanel);
     }
     
     public void AccionAlmacenamiento(object sender, RoutedEventArgs e)
     {
+    BotonesFunciones.Children.Clear();
+    Funcion.Children.Clear(); // Limpiar los controles de la interfaz si ya hay algo cargado
+
+    // Crear el DataGrid para mostrar los resultados
+    DataGrid dataGrid = new DataGrid
+    {
+        AutoGenerateColumns = false,
+        Width = 500,
+        Height = 300,
+        Margin = new Thickness(10),
+        IsReadOnly = true
+    };
+
+    // Agregar columnas al DataGrid
+    dataGrid.Columns.Add(new DataGridTextColumn
+    {
+        Header = "Carpeta",
+        Binding = new Binding("Carpeta")
+    });
+    dataGrid.Columns.Add(new DataGridTextColumn
+    {
+        Header = "Espacio Usado (MB)",
+        Binding = new Binding("EspacioUsado")
+    });
+    dataGrid.Columns.Add(new DataGridTextColumn
+    {
+        Header = "Límite (MB)",
+        Binding = new Binding("Limite")
+    });
+
+    // Instanciamos el objeto ControlFtp
+    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+
+    try
+    {
+        // Obtener todas las carpetas del FTP (esto debería obtenerse de alguna forma, por ejemplo de una base de datos o estructura predefinida)
+        List<string> carpetas = ftp.ListFiles("/");
+
+        // Crear la lista de objetos para el DataGrid
+        List<dynamic> data = new List<dynamic>();
+        foreach (var carpeta in carpetas)
+        {
+            long espacioUsado = ftp.ObtenerTamañoCarpeta(carpeta) / (1024 * 1024);  // Convertir a MB
+            long limite = 500; // Ejemplo de límite de 500MB por carpeta (esto debería venir de alguna base de datos)
+
+            // Crear alerta si se excede el 90% de la cuota
+            if (espacioUsado > limite * 0.9)
+            {
+                MessageBox.Show($"Alerta: La carpeta {carpeta} ha superado el 90% de su cuota.");
+            }
+
+            // Agregar los datos a la lista
+            data.Add(new
+            {
+                Carpeta = carpeta,
+                EspacioUsado = espacioUsado,
+                Limite = limite
+            });
+        }
+
+        // Asignar la lista de datos al DataGrid
+        dataGrid.ItemsSource = data;
+
+        // Agregar el DataGrid al contenedor de la interfaz
+        Funcion.Children.Add(dataGrid);
+
+        // Crear ComboBox para seleccionar la carpeta y un TextBox para el nuevo límite
+        ComboBox comboBox = new ComboBox
+        {
+            Width = 200,
+            Margin = new Thickness(10)
+        };
+        foreach (var carpeta in carpetas)
+        {
+            comboBox.Items.Add(carpeta);
+        }
+
+        TextBox nuevoLimiteTextBox = new TextBox
+        {
+            Width = 100,
+            Margin = new Thickness(10),
+            //P = "Nuevo límite (MB)"
+        };
+
+        Button modificarLimiteButton = new Button
+        {
+            Content = "Modificar Límite",
+            Width = 150,
+            Margin = new Thickness(10)
+        };
+
+        // Acción del botón para modificar el límite
+        modificarLimiteButton.Click += (s, e) =>
+        {
+            string selectedFolder = comboBox.SelectedItem.ToString();
+            if (long.TryParse(nuevoLimiteTextBox.Text, out long newLimitMB))
+            {
+                long newLimitBytes = newLimitMB * 1024 * 1024;  // Convertir a bytes
+                ftp.ModificarLimite(selectedFolder, newLimitBytes); // Llamar al método de FTP para modificar el límite
+                MessageBox.Show($"El límite para la carpeta {selectedFolder} ha sido modificado a {newLimitMB} MB.");
+            }
+            else
+            {
+                MessageBox.Show("Por favor, ingrese un límite válido.");
+            }
+        };
+
+        // Agregar los controles a la interfaz
+        StackPanel panel = new StackPanel { Orientation = Orientation.Horizontal };
+        panel.Children.Add(comboBox);
+        panel.Children.Add(nuevoLimiteTextBox);
+        panel.Children.Add(modificarLimiteButton);
+
         BotonesFunciones.Children.Clear();
-        Funcion.Children.Clear();
+        BotonesFunciones.Children.Add(panel);
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Error al gestionar el espacio: {ex.Message}");
+    }
     }
     
     public void AccionSalida(object sender, RoutedEventArgs e)
@@ -73,6 +315,7 @@ public partial class ViewFtpAdmin : Window
     /**
      * Acciones Botones
      */
+    // Accion de subir ficheros
     private void AccionSubirFichero(object sender, RoutedEventArgs e)
     {
             Funcion.Children.Clear();
@@ -374,13 +617,323 @@ public partial class ViewFtpAdmin : Window
     Funcion.Children.Add(nuevoNombreTextBox);
     Funcion.Children.Add(renombrarButton);
 }
+    
+    
+     /**
+     * Funciones de los botones de Directorio
+     */
 
-    public void AccionConsultar(object sender, RoutedEventArgs e)
+    // Accion crear directorio 
+    public void AccionCrearDirectorio(object sender, RoutedEventArgs e)
     {
-        BotonesFunciones.Children.Clear();
+        // Limpiar los controles de la interfaz si ya hay algo cargado
+    Funcion.Children.Clear();
 
+    // Crear controles dinámicos para la funcionalidad de crear carpeta
+    Label rutaLabel = new Label()
+    {
+        Content = "Seleccionar Ruta:",
+        Margin = new Thickness(10)
+    };
+
+    ComboBox rutaComboBox = new ComboBox()
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+
+    // Llenar el ComboBox con las rutas disponibles
+    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    var rutas = ftp.ListDirectories("/"); // Usamos ListDirectories para obtener las rutas
+
+    foreach (var ruta in rutas)
+    {
+        rutaComboBox.Items.Add(ruta);
     }
 
+    // Crear el campo de texto para el nuevo nombre de la carpeta
+    Label nuevoNombreLabel = new Label()
+    {
+        Content = "Nuevo Nombre de Carpeta:",
+        Margin = new Thickness(10)
+    };
+
+    TextBox nuevoNombreTextBox = new TextBox()
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+
+    // Crear el botón de "Crear Carpeta"
+    Button crearCarpetaButton = new Button()
+    {
+        Content = "Crear Carpeta",
+        Width = 150,
+        Margin = new Thickness(10)
+    };
+
+    // Lógica para crear la carpeta cuando se hace clic en el botón
+    crearCarpetaButton.Click += (s, ev) =>
+    {
+        string rutaSeleccionada = rutaComboBox.SelectedItem?.ToString();
+        string nuevaCarpeta = nuevoNombreTextBox.Text;
+
+        if (!string.IsNullOrEmpty(rutaSeleccionada) && !string.IsNullOrEmpty(nuevaCarpeta))
+        {
+            try
+            {
+                // Crear la carpeta en el servidor FTP
+                string nuevaRuta = Path.Combine(rutaSeleccionada, nuevaCarpeta);
+                ftp.CreateDirectory(nuevaRuta);
+                MessageBox.Show("Carpeta creada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al crear la carpeta: {ex.Message}");
+            }
+        }
+        else if (!string.IsNullOrEmpty(rutaSeleccionada))
+        {
+            try
+            {
+                // Crear la carpeta en el servidor FTP
+                rutaSeleccionada = "/";
+                string nuevaRuta = Path.Combine(rutaSeleccionada, nuevaCarpeta);
+                ftp.CreateDirectory(nuevaRuta);
+                MessageBox.Show("Carpeta creada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al crear la carpeta: {ex.Message}");
+            }
+        }
+        else
+        {
+            MessageBox.Show("Por favor, selecciona una ruta y proporciona un nombre para la carpeta.");
+
+        }
+    };
+
+        // Agregar los controles a la interfaz
+        Funcion.Children.Add(rutaLabel);
+        Funcion.Children.Add(rutaComboBox);
+        Funcion.Children.Add(nuevoNombreLabel);
+        Funcion.Children.Add(nuevoNombreTextBox);
+        Funcion.Children.Add(crearCarpetaButton);
+    }
+    
+    // Accion eleminar directorio 
+    public void AccionEliminarDirectorio(object sender, RoutedEventArgs e)
+{
+    // Limpiar los controles de la interfaz si ya hay algo cargado
+    Funcion.Children.Clear();
+
+    // Crear controles dinámicos para la funcionalidad de eliminar carpeta
+
+    // Etiqueta para seleccionar la ruta base
+    Label rutaLabel = new Label()
+    {
+        Content = "Seleccionar Ruta Base:",
+        Margin = new Thickness(10)
+    };
+
+    ComboBox rutaComboBox = new ComboBox()
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+
+    // Etiqueta para seleccionar la carpeta dentro de la ruta
+    Label carpetaLabel = new Label()
+    {
+        Content = "Seleccionar Carpeta a Eliminar:",
+        Margin = new Thickness(10)
+    };
+
+    ComboBox carpetaComboBox = new ComboBox()
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+
+    // Botón para eliminar la carpeta
+    Button eliminarCarpetaButton = new Button()
+    {
+        Content = "Eliminar Carpeta",
+        Width = 150,
+        Margin = new Thickness(10)
+    };
+
+    // Llenar el ComboBox de rutas base con los directorios disponibles
+    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    var rutasBase = ftp.ListDirectories("/"); // Directorios base
+
+    foreach (var ruta in rutasBase)
+    {
+        rutaComboBox.Items.Add(ruta);
+    }
+
+    // Lógica para actualizar las carpetas al seleccionar una ruta base
+    rutaComboBox.SelectionChanged += (s, ev) =>
+    {
+        carpetaComboBox.Items.Clear(); // Limpiar las carpetas previas
+
+        string rutaSeleccionada = rutaComboBox.SelectedItem?.ToString();
+        if (!string.IsNullOrEmpty(rutaSeleccionada))
+        {
+            var carpetas = ftp.ListDirectories(rutaSeleccionada); // Obtener carpetas de esa ruta
+
+            foreach (var carpeta in carpetas)
+            {
+                carpetaComboBox.Items.Add(carpeta);
+            }
+        }
+    };
+
+    // Lógica para eliminar la carpeta seleccionada
+    eliminarCarpetaButton.Click += (s, ev) =>
+    {
+        string rutaSeleccionada = rutaComboBox.SelectedItem?.ToString();
+        string carpetaSeleccionada = carpetaComboBox.SelectedItem?.ToString();
+
+        if (!string.IsNullOrEmpty(rutaSeleccionada) && !string.IsNullOrEmpty(carpetaSeleccionada))
+        {
+            try
+            {
+                // Construir la ruta completa de la carpeta
+                string carpetaCompleta = Path.Combine(rutaSeleccionada, carpetaSeleccionada);
+
+                // Verificar si la carpeta está vacía
+                var archivosEnCarpeta = ftp.ListFiles(carpetaCompleta);
+
+                if (archivosEnCarpeta.Count > 0)
+                {
+                    MessageBox.Show($"No se puede eliminar la carpeta '{carpetaSeleccionada}' porque no está vacía.");
+                    return;
+                }
+
+                // Eliminar la carpeta en el servidor FTP
+                ftp.DeleteDirectory(carpetaCompleta);
+                MessageBox.Show("Carpeta eliminada correctamente.");
+
+                // Actualizar el ComboBox de carpetas eliminando la carpeta eliminada
+                carpetaComboBox.Items.Remove(carpetaSeleccionada);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al eliminar la carpeta: {ex.Message}");
+            }
+        }
+        else
+        {
+            MessageBox.Show("Por favor, selecciona una ruta y una carpeta para eliminar.");
+        }
+    };
+
+    // Agregar los controles a la interfaz
+    Funcion.Children.Add(rutaLabel);
+    Funcion.Children.Add(rutaComboBox);
+    Funcion.Children.Add(carpetaLabel);
+    Funcion.Children.Add(carpetaComboBox);
+    Funcion.Children.Add(eliminarCarpetaButton);
+}
+    
+    
+    // Accion acceso
+public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
+{
+    // Limpiar los controles de la interfaz si ya hay algo cargado
+    Funcion.Children.Clear();
+
+    // Etiqueta para seleccionar la ruta base
+    Label rutaLabel = new Label()
+    {
+        Content = "Seleccionar Ruta Base:",
+        Margin = new Thickness(10)
+    };
+
+    ComboBox rutaComboBox = new ComboBox()
+    {
+        Width = 200,
+        Margin = new Thickness(10)
+    };
+
+    // Etiqueta para mostrar los permisos
+    Label permisosLabel = new Label()
+    {
+        Content = "Permisos de Carpetas:",
+        Margin = new Thickness(10)
+    };
+
+    ListBox permisosListBox = new ListBox()
+    {
+        Width = 300,
+        Height = 150,
+        Margin = new Thickness(10)
+    };
+
+    // Botón para consultar los permisos
+    Button consultarPermisosButton = new Button()
+    {
+        Content = "Consultar Permisos",
+        Width = 150,
+        Margin = new Thickness(10)
+    };
+
+    // Llenar el ComboBox de rutas base con los directorios disponibles
+    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    var rutasBase = ftp.ListDirectories("/"); // Directorios base
+
+    foreach (var ruta in rutasBase)
+    {
+        rutaComboBox.Items.Add(ruta);
+    }
+
+    // Lógica para consultar los permisos al hacer clic en el botón
+    consultarPermisosButton.Click += (s, ev) =>
+    {
+        try
+        {
+            string rutaBase = rutaComboBox.SelectedItem?.ToString() ?? string.Empty;
+
+            if (string.IsNullOrEmpty(rutaBase))
+            {
+                MessageBox.Show("Por favor, seleccione una ruta.");
+                return;
+            }
+
+            // Obtener los permisos de los directorios de la base de datos
+            var permisos = ControlFtp.ObtenerPermisos(rutaBase); // Aquí usamos el método que accede a la base de datos
+
+            permisosListBox.Items.Clear(); // Limpiar el ListBox antes de agregar nuevos ítems
+
+            foreach (var entry in permisos)
+            {
+                string carpeta = entry.Key;
+                string permiso = entry.Value;
+
+                bool puedeLeer = permiso.Contains("R"); // Permiso de lectura
+                bool puedeEscribir = permiso.Contains("W"); // Permiso de escritura
+
+                // Agregar los permisos al ListBox para mostrar
+                permisosListBox.Items.Add($"Carpeta: {carpeta} - Lectura: {(puedeLeer ? "Sí" : "No")} - Escritura: {(puedeEscribir ? "Sí" : "No")}");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al verificar los permisos: {ex.Message}");
+        }
+    };
+
+    // Agregar los controles a la interfaz
+    Funcion.Children.Add(rutaLabel);
+    Funcion.Children.Add(rutaComboBox);
+    Funcion.Children.Add(permisosLabel);
+    Funcion.Children.Add(permisosListBox);
+    Funcion.Children.Add(consultarPermisosButton);
+}
+
+    
     
     /**
      * Funcion de crear botones 
@@ -437,5 +990,48 @@ public partial class ViewFtpAdmin : Window
         BotonesFunciones.Children.Add(botones[1]);
         BotonesFunciones.Children.Add(botones[2]);
         BotonesFunciones.Children.Add(botones[3]);
+    }
+    
+    /**
+     * Funcion para crear los botones de Directorio
+     */
+    
+    private void crearBotonesDirectorio()
+    {
+        botonesDirectorio.Add(new Button()
+        {
+            Content = "Crear Directorio",
+            Width = 100,
+            Margin = new Thickness(10, 0, 10, 0),
+            Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
+            Foreground = new SolidColorBrush(Colors.Black),
+            FontSize = 14,
+            FontWeight = FontWeights.Bold,
+            BorderThickness = new Thickness(0),
+        });
+        botonesDirectorio.Add(new Button()
+        {
+            Content = "Eliminar Directorio",
+            Margin = new Thickness(10, 0, 10, 0),
+            Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
+            Foreground = new SolidColorBrush(Colors.Black),
+            FontSize = 14,
+            FontWeight = FontWeights.Bold,
+            BorderThickness = new Thickness(0),
+        });
+        botonesDirectorio.Add(new Button()
+        {
+            Content = "Gestion acceso",
+            Margin = new Thickness(10, 0, 10, 0),
+            Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
+            Foreground = new SolidColorBrush(Colors.Black),
+            FontSize = 14,
+            FontWeight = FontWeights.Bold,
+            BorderThickness = new Thickness(0),
+        });
+        
+        BotonesFunciones.Children.Add(botonesDirectorio[0]);
+        BotonesFunciones.Children.Add(botonesDirectorio[1]);
+        BotonesFunciones.Children.Add(botonesDirectorio[2]);
     }
 }
