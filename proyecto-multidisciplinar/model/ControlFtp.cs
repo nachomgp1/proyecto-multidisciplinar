@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
 using System.Windows;
+using System.Windows.Controls;
+using Npgsql;
 
 namespace proyecto_multidisciplinar.model;
 
@@ -144,5 +146,165 @@ public class ControlFtp
         string[] parts = details.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         return parts.Length > 0 ? parts[parts.Length - 1] : null;
     }
+    
+    
+    // Método para crear un directorio
+    public void CreateDirectory(string remoteDirectoryPath)
+    {
+        try
+        {
+            // Crear la solicitud FTP para crear el directorio
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{ftpServer}/{remoteDirectoryPath}");
+            request.Method = WebRequestMethods.Ftp.MakeDirectory;
+            request.Credentials = new NetworkCredential(username, password);
 
+            // Obtener la respuesta del servidor
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            {
+                // Confirmación opcional
+                MessageBox.Show($"Directorio creado correctamente: {remoteDirectoryPath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al crear el directorio en el servidor FTP: " + ex.Message);
+        }
+    }
+
+// Método para eliminar un directorio
+    public void DeleteDirectory(string remoteDirectoryPath)
+    {
+        try
+        {
+            // Crear la solicitud FTP para eliminar el directorio
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{ftpServer}/{remoteDirectoryPath}");
+            request.Method = WebRequestMethods.Ftp.RemoveDirectory;
+            request.Credentials = new NetworkCredential(username, password);
+
+            // Obtener la respuesta del servidor
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            {
+                // Confirmación opcional
+                MessageBox.Show($"Directorio eliminado correctamente: {remoteDirectoryPath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al eliminar el directorio en el servidor FTP: " + ex.Message);
+        }
+    }
+    
+    
+    public static Dictionary<string, string> ObtenerPermisos(string rutaBase)
+    {
+        Dictionary<string, string> permisos = new Dictionary<string, string>();
+
+        try
+        {
+            // Usamos la clase Conexion para obtener la conexión a la base de datos
+            Conexion conexion = new Conexion();
+
+            if (conexion.AbrirConexion())
+            {
+                // Consulta para obtener los permisos de los directorios bajo la ruta base
+                string query = @"
+                SELECT Ruta, Permisos 
+                FROM Permisos 
+                WHERE Ruta LIKE @RutaBase || '%';";
+
+                // Creamos el parámetro para la ruta base
+                NpgsqlParameter parametroRuta = new NpgsqlParameter("@RutaBase", NpgsqlTypes.NpgsqlDbType.Varchar);
+                parametroRuta.Value = rutaBase;
+
+                // Ejecutar la consulta
+                using (var reader = conexion.EjecutarConsulta(query, parametroRuta))
+                {
+                    // Leer los resultados de la consulta
+                    while (reader.Read())
+                    {
+                        string ruta = reader["Ruta"].ToString();
+                        string permiso = reader["Permisos"].ToString();
+                        permisos.Add(ruta, permiso);
+                    }
+                }
+
+                conexion.CerrarConexion(); // Cerrar la conexión
+            }
+            else
+            {
+                Console.WriteLine("No se pudo establecer la conexión a la base de datos.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al obtener los permisos: {ex.Message}");
+        }
+
+        return permisos;
+    }
+    
+    public TreeViewItem CrearNodoJerarquia(string remotePath)
+    {
+        TreeViewItem nodo = new TreeViewItem
+        {
+            Header = remotePath,
+            Tag = remotePath
+        };
+
+        try
+        {
+            // Obtener las subcarpetas y archivos desde el FTP
+            var directorios = ListDirectories(remotePath);
+            var archivos = ListFiles(remotePath);
+
+            // Agregar nodos para los directorios
+            foreach (var directorio in directorios)
+            {
+                TreeViewItem directorioNode = new TreeViewItem
+                {
+                    Header = directorio,
+                    Tag = $"{remotePath}/{directorio}"
+                };
+
+                // Añadir un nodo vacío para permitir expansión diferida
+                directorioNode.Items.Add(null);
+
+                // Evento para cargar subdirectorios al expandir el nodo
+                directorioNode.Expanded += (s, e) =>
+                {
+                    if (directorioNode.Items.Count == 1 && directorioNode.Items[0] == null)
+                    {
+                        directorioNode.Items.Clear();
+                        TreeViewItem subNodo = CrearNodoJerarquia($"{remotePath}/{directorio}");
+                        foreach (var item in subNodo.Items)
+                        {
+                            directorioNode.Items.Add(item);
+                        }
+                    }
+                };
+
+                nodo.Items.Add(directorioNode);
+            }
+
+            // Agregar nodos para los archivos
+            foreach (var archivo in archivos)
+            {
+                TreeViewItem archivoNode = new TreeViewItem
+                {
+                    Header = archivo,
+                    Tag = $"{remotePath}/{archivo}"
+                };
+
+                nodo.Items.Add(archivoNode);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al obtener la jerarquía del FTP: {ex.Message}");
+        }
+
+        return nodo;
+    }
+    
+   
 }

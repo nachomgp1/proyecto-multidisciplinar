@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="controller\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FTPHelper" Version="1.0.3" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
   </ItemGroup>
@@ -37,6 +33,10 @@
     <Resource Include="images\imagedef.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="controller\" />
   </ItemGroup>
 
 </Project>

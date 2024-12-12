@@ -79,25 +79,20 @@
             />
     </StackPanel>
 
-    <!-- Dynamic Content Section -->
-    <ContentControl x:Name="DynamicContent"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Margin="30,80,30,50"
-                    Background="#F9F9F9"
-                    BorderBrush="#CCCCCC"
-                    BorderThickness="1">
-            <StackPanel x:Name="BotonesFunciones"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top">
-                    <StackPanel x:Name="FuncionPrincipal"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top">
-                    </StackPanel>
-            </StackPanel>
-            <!-- Default Content -->
+        <ContentControl x:Name="ContentPrincipal"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="30,50,30,20"
+                        Background="#F9F9F9"
+                        BorderBrush="#CCCCCC"
+                        BorderThickness="1">
+                    
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                <StackPanel x:Name="BotonesFunciones" Orientation="Horizontal" HorizontalAlignment="Center"/>
+                                <StackPanel x:Name="Funcion" Orientation="Vertical" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                </ScrollViewer>
     </ContentControl>
 
     <!-- Exit Button -->

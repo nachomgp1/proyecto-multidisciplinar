@@ -1,6 +1,4 @@
-﻿using Npgsql;
-using proyecto_multidisciplinar.model;
-using System.Text;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Npgsql;
+using proyecto_multidisciplinar.model;
 
 namespace proyecto_multidisciplinar
 {
@@ -29,7 +29,7 @@ namespace proyecto_multidisciplinar
             string username = userTextBox.Text;
             string password = passwordTextBox.Password;
 
-            ValidateUser(username, password);
+            //ValidateUser(username, password);
             view.ViewFtpUser view = new view.ViewFtpUser(username);
             view.ViewFtpAdmin viewAdmin = new view.ViewFtpAdmin(username); 
             //viewAdmin.Show();
