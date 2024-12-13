@@ -143,7 +143,7 @@ public class ControlFtp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al listar los archivos: " + ex.Message);
+                    //MessageBox.Show("Error al listar los archivos: " + ex.Message);
                 }
         
                 return files;
@@ -330,8 +330,8 @@ public class ControlFtp
         long totalSize = 0;
         try
         {
-            List<string> archivos = ListFiles(remotePath); // Obtener lista de archivos en el directorio
-            foreach (var archivo in archivos)
+            List<string> direcetorio = ListFiles(remotePath); // Obtener lista de archivos en el directorio
+            foreach (var archivo in direcetorio)
             {
                 totalSize += ObtenerTamañoArchivo(remotePath + "/" + archivo);  // Sumar el tamaño de cada archivo
             }

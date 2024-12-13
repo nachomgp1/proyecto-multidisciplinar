@@ -204,7 +204,6 @@ public partial class ViewFtpUser : Window
     // Accion de descargar ficheros
     public void AccionDescargar(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Botón de subir archivo clickeado.");  // Verificar si el botón es presionado
         Funcion.Children.Clear();
 
         // Crear controles dinámicos para la funcionalidad
@@ -272,7 +271,6 @@ public partial class ViewFtpUser : Window
     // Accion de eliminar fichero
     public void AccionEliminar(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Botón de subir archivo clickeado.");  // Verificar si el botón es presionado
         Funcion.Children.Clear();
 
         Label archivoLabel = new Label()
