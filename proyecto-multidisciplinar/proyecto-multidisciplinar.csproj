@@ -11,9 +11,13 @@
 
   <ItemGroup>
     <Compile Remove="view\**" />
+    <Compile Include="view\ViewFtpAdmin.xaml.cs" />
+    <Compile Include="view\ViewFtpUser.xaml.cs" />
     <EmbeddedResource Remove="view\**" />
     <None Remove="view\**" />
     <Page Remove="view\**" />
+    <Page Include="view\ViewFtpAdmin.xaml" />
+    <Page Include="view\ViewFtpUser.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,11 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="controller\" />
-    <Folder Include="view\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="FTPHelper" Version="1.0.3" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
   </ItemGroup>
 
@@ -41,6 +41,10 @@
     <Resource Include="images\user-icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="controller\" />
   </ItemGroup>
 
 </Project>
