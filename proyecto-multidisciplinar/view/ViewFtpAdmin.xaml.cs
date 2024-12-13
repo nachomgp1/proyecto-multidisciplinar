@@ -10,9 +10,6 @@ namespace proyecto_multidisciplinar.view;
 public partial class ViewFtpAdmin : Window
 {
     private string  username;
-    DateTime currentDate = DateTime.Now;
-    string userIp = MainWindow.GetLocalIpAdress();
-
     private List<Button> botones =new List<Button>();
     private List<Button> botonesDirectorio = new List<Button>();
 
@@ -313,11 +310,6 @@ public partial class ViewFtpAdmin : Window
     {
         BotonesFunciones.Children.Clear();
         Funcion.Children.Clear();
-        LogsView viewLog = new LogsView(username);
-        this.Close();
-        viewLog.Show();
-        
-
     }
 
     /**
@@ -402,7 +394,6 @@ public partial class ViewFtpAdmin : Window
             {
                 ftp.UploadFile(localFilePath, $"{selectedDirectory}/{Path.GetFileName(localFilePath)}");
                 MessageBox.Show("Archivo subido correctamente.");
-                Logs.InsertLogs(username, "Upload file", currentDate, userIp);
             }
             catch (Exception ex)
             {
@@ -427,6 +418,7 @@ public partial class ViewFtpAdmin : Window
     // Accion de descargar ficheros
     public void AccionDescargar(object sender, RoutedEventArgs e)
     {
+        MessageBox.Show("Botón de subir archivo clickeado.");  // Verificar si el botón es presionado
         Funcion.Children.Clear();
 
         // Crear controles dinámicos para la funcionalidad
@@ -475,7 +467,6 @@ public partial class ViewFtpAdmin : Window
                     string localPath = saveFileDialog.FileName;
                     ftp.DownloadFile(selectedArchivo, localPath);
                     MessageBox.Show("Archivo descargado correctamente.");
-                    Logs.InsertLogs(username, "Donwload file", currentDate, userIp);
                 }
             }
             else
@@ -533,7 +524,6 @@ public partial class ViewFtpAdmin : Window
             {
                 ftp.DeleteFile(selectedArchivo);
                 MessageBox.Show("Archivo eliminado correctamente.");
-                Logs.InsertLogs(username, "Delete file", currentDate, userIp);
             }
             else
             {

@@ -1,0 +1,104 @@
+﻿<Window
+    x:Class="proyecto_multidisciplinar.view.EnviarCorreoWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Enviar Correo"
+    Width="500"
+    Height="800"
+    WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush>
+            <GradientStop Offset="0" Color="#ffcc87" />
+            <GradientStop Offset="1" Color="#FAD6A5" />
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Border
+        Margin="5"
+        Background="White"
+        BorderBrush="#D6D6D6"
+        BorderThickness="2"
+        CornerRadius="10">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Content="Para:" />
+            <TextBox
+                x:Name="txtDestinatario"
+                Grid.Row="1"
+                Margin="0,0,0,10" />
+
+            <Label Grid.Row="2" Content="Asunto:" />
+            <TextBox
+                x:Name="txtAsunto"
+                Grid.Row="3"
+                Margin="0,0,0,587" />
+
+            <Label
+                Grid.Row="3"
+                Margin="0,67,0,257"
+                Content="Mensaje:" />
+            <TextBox
+                x:Name="txtMensaje"
+                Grid.Row="3"
+                Margin="-2,102,-2,142"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Auto" />
+
+            <Label
+                Grid.Row="3"
+                Margin="-2,503,2,89"
+                Content="Archivos Adjuntados:" />
+            <ListView
+                x:Name="lstArchivosAdj"
+                Grid.Row="3"
+                Height="100"
+                Margin="2,527,-2,13">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,10,0" Text="{Binding Name}" />
+                            <TextBlock Text="{Binding SizeInMB, StringFormat='{}{0:F2} MB'}" />
+                            <Button
+                                Click="EliminarArchivo_Click"
+                                CommandParameter="{Binding}"
+                                Content="Eliminar" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackPanel
+                Grid.Row="6"
+                Margin="0,10,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Background="#fee2bc"
+                    Click="Adjuntar_Click"
+                    Content="Adjuntar Archivo" />
+                <Button
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Background="#fee2bc"
+                    Click="EnviarCorreo_Click"
+                    Content="Enviar" />
+                <Button
+                    Width="100"
+                    Background="#fee2bc"
+                    Click="Cancelar_Click"
+                    Content="Cancelar" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

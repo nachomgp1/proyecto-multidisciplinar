@@ -10,32 +10,47 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="view\**" />
-    <EmbeddedResource Remove="view\**" />
-    <None Remove="view\**" />
-    <Page Remove="view\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Remove="images\arrow-right_1.png" />
+    <None Remove="images\avion.png" />
+    <None Remove="images\google.png" />
     <None Remove="images\imagedef.jpg" />
     <None Remove="images\imagedef3.jpg" />
+    <None Remove="images\loading.gif" />
+    <None Remove="images\refresh.png" />
     <None Remove="images\user-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="controller\" />
-    <Folder Include="view\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.68.0.3427" />
+    <PackageReference Include="MimeKit" Version="4.9.0" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
+    <PackageReference Include="XamlAnimatedGif" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\arrow-right_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\avion.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\google.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\imagedef.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\imagedef3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\loading.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\refresh.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\user-icon.png">
