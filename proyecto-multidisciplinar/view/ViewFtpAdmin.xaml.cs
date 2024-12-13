@@ -213,10 +213,11 @@ public partial class ViewFtpAdmin : Window
     });
 
     // Instanciamos el objeto ControlFtp
-    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
 
     try
     {
+        var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+
         // Obtener todas las carpetas del FTP (esto debería obtenerse de alguna forma, por ejemplo de una base de datos o estructura predefinida)
         List<string> carpetas = ftp.ListFiles("/");
 
@@ -424,7 +425,6 @@ public partial class ViewFtpAdmin : Window
     // Accion de descargar ficheros
     public void AccionDescargar(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Botón de subir archivo clickeado.");  // Verificar si el botón es presionado
         Funcion.Children.Clear();
 
         // Crear controles dinámicos para la funcionalidad
@@ -492,7 +492,6 @@ public partial class ViewFtpAdmin : Window
     // Accion de eliminar fichero
     public void AccionEliminar(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Botón de subir archivo clickeado.");  // Verificar si el botón es presionado
         Funcion.Children.Clear();
 
         Label archivoLabel = new Label()
