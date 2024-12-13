@@ -116,35 +116,45 @@ public class ControlFtp
         List<string> files = new List<string>();
 
         try
-        {
-            // Crear una solicitud FTP para obtener el listado de archivos
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"{ftpServer}{remoteDirectory}"));
-            request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;  // Obtiene detalles sobre los archivos
-            request.Credentials = new NetworkCredential(username, password);
-
-            // Obtener la respuesta del servidor FTP
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
                 {
-                    // Procesar cada línea (que representa un archivo o directorio)
-                    string fileName = ParseFileName(line);
-                    if (!string.IsNullOrEmpty(fileName))
+                    // Crear una solicitud FTP para obtener el listado de archivos
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri($"{ftpServer}{remoteDirectory}"));
+                    request.Method = WebRequestMethods.Ftp.ListDirectoryDetails; // Obtiene detalles sobre los archivos
+                    request.Credentials = new NetworkCredential(username, password);
+        
+                    // Obtener la respuesta del servidor FTP
+                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
-                        files.Add(fileName);
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            // Procesar cada línea (que representa un archivo o directorio)
+                            if (IsFile(line)) // Filtrar únicamente archivos
+                            {
+                                string fileName = ParseFileName(line);
+                                if (!string.IsNullOrEmpty(fileName))
+                                {
+                                    files.Add(fileName);
+                                }
+                            }
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al listar los archivos: " + ex.Message);
+                }
+        
+                return files;
             }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Error al listar los archivos: " + ex.Message);
-        }
-
-        return files;
-    }
+            // Método para verificar si una línea representa un archivo
+            bool IsFile(string line)
+            {
+                // Ejemplo básico: verificar si la línea comienza con un carácter típico de archivo
+                // En servidores Unix, los archivos comienzan con '-' y los directorios con 'd'
+                return line.StartsWith("-");
+            }
 
     private string ParseFileName(string details)
     {
