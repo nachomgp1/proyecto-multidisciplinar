@@ -5,7 +5,9 @@
     Title="Google Login App"
     Width="750"
     Height="447"
-    Background="White">
+    Background="White"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen">
     <Grid>
         <!--  Botón de retroceso  -->
         <Button

@@ -9,7 +9,11 @@ namespace proyecto_multidisciplinar.view;
 
 public partial class ViewFtpAdmin : Window
 {
-    private string  username;
+    private string?  username;
+    private DateTime currentDate = DateTime.Now;
+    private string userIp = MainWindow.GetLocalIpAdress();
+    private string email;
+
     private List<Button> botones =new List<Button>();
     private List<Button> botonesDirectorio = new List<Button>();
 
@@ -22,6 +26,7 @@ public partial class ViewFtpAdmin : Window
         InitializeComponent();
         this.username = username;
         usernameLabel.Content = "Logged user:" + " " + username;
+        this.email = MainWindow.GetEmail(username);
     }
     public void AccionArchivos(object sender, RoutedEventArgs e)
     {
@@ -394,6 +399,7 @@ public partial class ViewFtpAdmin : Window
             {
                 ftp.UploadFile(localFilePath, $"{selectedDirectory}/{Path.GetFileName(localFilePath)}");
                 MessageBox.Show("Archivo subido correctamente.");
+                Logs.InsertLogs(username, "Upload file", currentDate, userIp, email);
             }
             catch (Exception ex)
             {

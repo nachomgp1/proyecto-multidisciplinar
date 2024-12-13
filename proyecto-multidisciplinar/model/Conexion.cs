@@ -8,7 +8,6 @@ using Npgsql;
 
 namespace proyecto_multidisciplinar.model
 {
-    //Hola soy Nacho
         public class Conexion
         {
             private NpgsqlConnection connection;

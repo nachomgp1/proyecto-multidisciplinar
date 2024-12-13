@@ -20,14 +20,16 @@ namespace proyecto_multidisciplinar.model
         public string? action { get; set; }
         public DateTime date { get; set; }
         public string? ip { get; set; }
+        public string? user_email { get; set; }
 
-        public Logs(int id, string? username, string? action, DateTime date, string? ip)
+        public Logs(int id, string? username, string? action, DateTime date, string? ip, string? user_email)
         {
             this.id = id;
             this.username = username;
             this.action = action;
             this.date = date;
             this.ip = ip;
+            this.user_email = user_email;
         }
 
         public Logs() { }
@@ -43,10 +45,11 @@ namespace proyecto_multidisciplinar.model
             dataTable.Columns.Add("ACTION", typeof(string));
             dataTable.Columns.Add("DATE", typeof(DateTime));
             dataTable.Columns.Add("IP", typeof(string));
+            dataTable.Columns.Add("EMAIL", typeof(string));
 
             foreach (var log in logs)
             {
-                dataTable.Rows.Add(log.id, log.username, log.action, log.date, log.ip);  
+                dataTable.Rows.Add(log.id, log.username, log.action, log.date, log.ip, log.user_email);  
             }
 
             DataGrid dataGrid = new DataGrid
@@ -117,6 +120,7 @@ namespace proyecto_multidisciplinar.model
                         action = reader.GetString(2),
                         date = reader.GetDateTime(3),
                         ip = reader.GetString(4),
+                        user_email = reader.GetString(5),
                     };
                     logsList.Add(log);
                 }
@@ -125,7 +129,7 @@ namespace proyecto_multidisciplinar.model
             return logsList;
         }
 
-        public static void InsertLogs(string? username, string? action, DateTime date, string? ip)
+        public static void InsertLogs(string? username, string? action, DateTime date, string? ip, string? email)
         {
             Conexion conexion = new Conexion();
             
@@ -133,13 +137,15 @@ namespace proyecto_multidisciplinar.model
             if (conexion.AbrirConexion())
             {
 
-                string query = "INSERT INTO \"Logs\" (username, action, date, user_ip) VALUES (@username, @action, @date, @ip)";
+                string query = "INSERT INTO \"Logs\" (username, action, date, user_ip, user_email) VALUES (@username, @action, @date, @ip, @email)";
 
                 NpgsqlParameter[] parameters = new NpgsqlParameter[] {
                 new NpgsqlParameter("@username", username),
                 new NpgsqlParameter("@action", action),
                 new NpgsqlParameter("@date", date),
-                new NpgsqlParameter("@ip", ip)
+                new NpgsqlParameter("@ip", ip),
+                new NpgsqlParameter("@email", email),
+                
         };
                 try
                 {

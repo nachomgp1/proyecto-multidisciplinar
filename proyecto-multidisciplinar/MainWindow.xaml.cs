@@ -37,7 +37,7 @@ namespace proyecto_multidisciplinar
             if (ValidateUser(username, password))
             {
                 //Inserting log when user is validated
-                Logs.InsertLogs(username, "Successfully logged in", currentDate, userIp);
+                Logs.InsertLogs(username, "Successfully logged in", currentDate, userIp, email);
 
                 int typePermission = ObtainUserPermissions(username);
 
@@ -68,7 +68,7 @@ namespace proyecto_multidisciplinar
             else
             {
                 //Inserting log when user or password are invalid
-                Logs.InsertLogs(username, "Error when logging in", currentDate, userIp);
+                Logs.InsertLogs(username, "Error when logging in", currentDate, userIp, email);
             }
         }
 
