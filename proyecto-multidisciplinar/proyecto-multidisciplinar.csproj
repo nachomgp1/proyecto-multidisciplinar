@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="view\**" />
+    <EmbeddedResource Remove="view\**" />
+    <None Remove="view\**" />
+    <Page Remove="view\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="images\imagedef.jpg" />
     <None Remove="images\imagedef3.jpg" />
     <None Remove="images\user-icon.png" />
@@ -17,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="controller\" />
+    <Folder Include="view\" />
   </ItemGroup>
 
   <ItemGroup>
