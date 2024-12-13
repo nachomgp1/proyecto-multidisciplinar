@@ -944,7 +944,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
        botones.Add(new Button()
         {
             Content = "Subir archivo",
-            Width = 100,
+            Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -955,7 +955,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         botones.Add(new Button()
         {
             Content = "Descargar archivos",
-            Width = 100,
+            Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -966,7 +966,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         botones.Add(new Button()
         {
             Content = "Eliminar archivos",
-            Width = 100,
+            Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -977,7 +977,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         botones.Add(new Button()
         {
             Content = "Renombrar",
-            Width = 100,
+            Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),

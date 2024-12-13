@@ -2,7 +2,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using FTPHelper;
 using proyecto_multidisciplinar.model;
 using proyecto_multidisciplinar;
 using static proyecto_multidisciplinar.model.Conexion;

@@ -1,0 +1,58 @@
+﻿<Window
+    x:Class="proyecto_multidisciplinar.view.MainWindowMail"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Google Login App"
+    Width="750"
+    Height="447"
+    Background="White">
+    <Grid>
+        <!--  Botón de retroceso  -->
+        <Button
+            Width="110"
+            Height="94"
+            Margin="10,0,0,10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            BorderThickness="0"
+            Click="BackButton_Click">
+            <Image
+                Width="87"
+                Height="66"
+                Source="../images/arrow-right_1.png"
+                Stretch="Uniform">
+                <UIElement.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform />
+                        <SkewTransform />
+                        <RotateTransform />
+                        <TranslateTransform />
+                    </TransformGroup>
+                </UIElement.RenderTransform>
+            </Image>
+        </Button>
+
+        <!--  Contenedor del logo y botón  -->
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+
+            <!--  Botón de inicio de sesión  -->
+            <Button
+                Width="233"
+                Height="61"
+                Background="PaleTurquoise"
+                BorderThickness="1"
+                Click="GoogleLoginButton_Click"
+                Content="Login with Google"
+                Cursor="Hand"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                FontWeight="Bold" />
+        </StackPanel>
+        <Image Margin="262,190,438,191" Source="../images/google.png" />
+    </Grid>
+</Window>
+

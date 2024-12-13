@@ -1,0 +1,172 @@
+﻿<Window
+    x:Class="proyecto_multidisciplinar.view.EmailsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Mis Correos"
+    Width="800"
+    Height="400">
+    <Window.Background>
+        <LinearGradientBrush>
+            <GradientStop Offset="0" Color="#ffcc87" />
+            <GradientStop Offset="1" Color="#FAD6A5" />
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Border
+        Margin="5"
+        Background="White"
+        BorderBrush="#D6D6D6"
+        BorderThickness="2"
+        CornerRadius="10">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <!--  Espacio para la lista de correos  -->
+                <RowDefinition Height="Auto" />
+                <!--  Fila para botones  -->
+            </Grid.RowDefinitions>
+
+
+            <Image
+                x:Name="loadingImage"
+                Width="500"
+                Height="500"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="../images/loading.gif"
+                Visibility="Collapsed" />
+
+
+            <!--  ListView con Scroll habilitado automáticamente  -->
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ListView x:Name="emailListView">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn
+                                Width="200"
+                                DisplayMemberBinding="{Binding From}"
+                                Header="From" />
+                            <GridViewColumn
+                                Width="350"
+                                DisplayMemberBinding="{Binding Subject}"
+                                Header="Affair" />
+                            <GridViewColumn
+                                Width="105"
+                                DisplayMemberBinding="{Binding Hour}"
+                                Header="Date" />
+                            <GridViewColumn Width="70" Header="Acctions">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button
+                                            Margin="5,0"
+                                            Background="#ffbeba"
+                                            Click="EliminarCorreo_Click"
+                                            CommandParameter="{Binding MessageId}"
+                                            Content="Eliminar" />
+
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </ScrollViewer>
+
+            <!--  Botones de control  -->
+            <StackPanel
+                Grid.Row="1"
+                Margin="0,10,0,10"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Width="120"
+                    Margin="0,0,10,0"
+                    Background="#fee2bc"
+                    Click="ActualizarCorreos_Click">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Image
+                            Width="20"
+                            Height="20"
+                            Margin="5"
+                            Source="../images/refresh.png" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Refresh" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    Width="120"
+                    Margin="0,0,10,0"
+                    Background="#fee2bc"
+                    Click="EnviarCorreo_Click">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Image
+                            Width="20"
+                            Height="20"
+                            Margin="5"
+                            Source="../images/avion.png" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Send Mail" />
+                    </StackPanel>
+                </Button>
+
+
+                <Button
+                    Width="120"
+                    Background="#ffbeba"
+                    Click="CerrarSesion_Click">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Image
+                            Width="20"
+                            Height="20"
+                            Margin="5"
+                            Source="../images/salida.png" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Log out" />
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+            <Button
+                Grid.Row="1"
+                Width="79"
+                Height="40"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="BackButton_Click">
+                <Image
+                    Width="55"
+                    Height="36"
+                    Source="../images/arrow-right_1.png"
+                    Stretch="Uniform">
+                    <UIElement.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform />
+                            <SkewTransform />
+                            <RotateTransform />
+                            <TranslateTransform />
+                        </TransformGroup>
+                    </UIElement.RenderTransform>
+                </Image>
+            </Button>
+        </Grid>
+    </Border>
+</Window>
+

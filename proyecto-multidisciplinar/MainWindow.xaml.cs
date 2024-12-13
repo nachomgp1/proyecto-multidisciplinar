@@ -109,7 +109,7 @@ namespace proyecto_multidisciplinar
 
         }
 
-        private static int ObtainUserPermissions(string username)
+        public static int ObtainUserPermissions(string username)
         {
             Conexion conexion = new Conexion();
             int typePermission = 0;

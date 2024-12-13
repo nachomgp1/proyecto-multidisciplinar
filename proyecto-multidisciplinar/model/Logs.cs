@@ -156,6 +156,8 @@ namespace proyecto_multidisciplinar.model
                 MessageBox.Show("Error connecting to database");
 
             }
+
+            conexion.CerrarConexion();
         }
     }
 }
