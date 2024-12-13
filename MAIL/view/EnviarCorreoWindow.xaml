@@ -1,0 +1,80 @@
+﻿<Window x:Class="MAIL.view.EnviarCorreoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Enviar Correo" 
+        Height="800" 
+        Width="500"
+        WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush>
+            <GradientStop Color="#ffcc87" Offset="0"/>
+            <GradientStop Color="#FAD6A5" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Border CornerRadius="10" 
+     Background="White" 
+     BorderBrush="#D6D6D6" 
+     BorderThickness="2" 
+     Margin="5">
+        <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Para:" Grid.Row="0"/>
+        <TextBox x:Name="txtDestinatario" Grid.Row="1" Margin="0,0,0,10"/>
+
+        <Label Content="Asunto:" Grid.Row="2"/>
+        <TextBox x:Name="txtAsunto" Grid.Row="3" Margin="0,0,0,587"/>
+
+        <Label Content="Mensaje:" Grid.Row="3" Margin="0,67,0,257"/>
+        <TextBox x:Name="txtMensaje" Grid.Row="3" 
+                 TextWrapping="Wrap" 
+                 AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto" Margin="-2,102,-2,142"/>
+
+        <Label Content="Archivos Adjuntados:" Grid.Row="3" Margin="-2,503,2,89"/>
+        <ListView x:Name="lstArchivosAdj" Grid.Row="3" 
+                  Height="100" 
+                  Margin="2,527,-2,13">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" Margin="0,0,10,0"/>
+                        <TextBlock Text="{Binding SizeInMB, StringFormat='{}{0:F2} MB'}"/>
+                        <Button Content="Eliminar" 
+                                Click="EliminarArchivo_Click" 
+                                CommandParameter="{Binding}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="6" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,10,0,0">
+            <Button Content="Adjuntar Archivo" 
+                    Width="100" 
+                    Background="#fee2bc"
+                    Margin="0,0,10,0"
+                    Click="Adjuntar_Click"/>
+            <Button Content="Enviar" 
+                    Width="100" 
+                    Margin="0,0,10,0"
+                      Background="#fee2bc"
+                    Click="EnviarCorreo_Click"/>
+            <Button Content="Cancelar" 
+                    Width="100"
+                      Background="#fee2bc"
+                    Click="Cancelar_Click"/>
+        </StackPanel>
+    </Grid>
+    </Border>
+</Window>
