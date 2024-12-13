@@ -186,8 +186,9 @@ namespace proyecto_multidisciplinar
                     int emailIndex = reader.GetOrdinal("email");
 
                     email = reader.GetString(emailIndex);
-
+                    
                 }
+                conexion.CerrarConexion();
             }
             else
             {

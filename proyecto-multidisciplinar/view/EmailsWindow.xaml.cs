@@ -21,7 +21,7 @@ namespace proyecto_multidisciplinar.view
         private GmailService gmailService;
         private UserCredential credential;
         private Window ventanaAnterior;
-
+       
         public EmailsWindow(GmailService service, UserCredential userCredential, Window ventanaAnterior)
         {
           
