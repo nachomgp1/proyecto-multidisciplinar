@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <None Remove="images\imagedef.jpg" />
+    <None Remove="images\imagedef3.jpg" />
+    <None Remove="images\user-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +33,12 @@
 
   <ItemGroup>
     <Resource Include="images\imagedef.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\imagedef3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\user-icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
