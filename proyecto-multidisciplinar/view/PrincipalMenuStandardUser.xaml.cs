@@ -24,7 +24,9 @@ namespace proyecto_multidisciplinar.view
 
             this.username = username;
 
-            usernameLabel.Content = "Logged user:" + " " + username;
+            string displayUsername = username.Split('@')[0];    
+
+            usernameLabel.Content = "Logged user:" + " " + displayUsername;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -33,5 +35,18 @@ namespace proyecto_multidisciplinar.view
             this.Close();
             mainWindow.Show();
         }
+
+        private void Button_Click_Ftp(object sender, RoutedEventArgs e)
+        {
+
+
+        }
+
+        private void Button_Click_Email(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        
     }
 }
