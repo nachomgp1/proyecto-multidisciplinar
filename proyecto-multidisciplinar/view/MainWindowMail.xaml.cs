@@ -24,23 +24,21 @@ namespace proyecto_multidisciplinar.view
 
         public MainWindowMail(string? username)
         {
-            InitializeComponent();
             this.username = username;
+            InitializeComponent();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
-
-
+           
             int typeUser = MainWindow.ObtainUserPermissions(username);
 
             if (typeUser == 3)
             {
-
                 PrincipalMenuAdmin viewAdmid = new PrincipalMenuAdmin(username);
                 viewAdmid.Show();
             }
+            this.Close();
         }
 
         private async void GoogleLoginButton_Click(object sender, RoutedEventArgs e)
