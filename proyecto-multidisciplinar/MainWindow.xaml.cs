@@ -1,4 +1,4 @@
-﻿using Npgsql;
+using Npgsql;
 using proyecto_multidisciplinar.model;
 using System.Net;
 using System.Text;
