@@ -39,14 +39,15 @@ namespace proyecto_multidisciplinar.view
             mainWindow.Show();
         }
 
-        private void Button_Click_Ftp(object sender, RoutedEventArgs e)
-        {
-            //ViewFtpAdmin ftpWindow = new ViewFtpAdmin(username);
-            //this.Close();
-            //ftpWindow.Show();
+        private void Button_Click_Ftp(object sender, RoutedEventArgs e) { 
+        
+            ViewFtpAdmin ftpWindow = new ViewFtpAdmin(username);
+            this.Close();
+            ftpWindow.Show();
+            }
             
 
-        }
+        
         private void Button_Click_Email(object sender, RoutedEventArgs e)
         {
             //PrincipalEmailWindow emailWindow = new PrincipalEmailWindow(email);
