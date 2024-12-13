@@ -19,6 +19,7 @@
   <ItemGroup>
     <None Remove="images\imagedef.jpg" />
     <None Remove="images\sol2.jpg" />
+    <None Remove="images\solHorizontal.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\sol2.jpg" />
+    <Resource Include="images\solHorizontal.jpg" />
   </ItemGroup>
 
 </Project>
