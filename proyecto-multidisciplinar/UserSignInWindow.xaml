@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
         Title="User Login"
-        Height="490" Width="830" Background="White">
-    <Grid Name="userSignIngGrid">
+        Height="520" Width="850" Background="White">
+    <Grid Name="userSignIngGrid" RenderTransformOrigin="0.502,0.533">
         <!-- Header -->
         <Label Content="User Sign-In" 
                HorizontalAlignment="Center" 
@@ -44,29 +45,45 @@
                  FontSize="14" 
                  BorderBrush="#CCCCCC" 
                  Background="#F9F9F9" />
-
+        <Label Content="Email" 
+    Padding="0"
+    HorizontalAlignment="Left" 
+    Margin="328,131,0,0" 
+    VerticalAlignment="Top" 
+    FontSize="14" 
+    Foreground="#4A4A4A" />
+        <TextBox x:Name="emailTextBox" 
+    HorizontalAlignment="Left" 
+    Margin="328,156,0,0" 
+    VerticalAlignment="Top" 
+    Width="250" 
+    Height="30" 
+    Padding="5" 
+    FontSize="14" 
+    BorderBrush="#CCCCCC" 
+    Background="#F9F9F9" />
         <Label Content="Password" 
                Padding="0"
                HorizontalAlignment="Left" 
-               Margin="328,137,0,0" 
+               Margin="328,197,0,0" 
                VerticalAlignment="Top" 
                FontSize="14" 
                Foreground="#4A4A4A" />
         <PasswordBox x:Name="passwordTextBox" 
                      HorizontalAlignment="Left" 
-                     Margin="328,162,0,0" 
-                     VerticalAlignment="Top" 
+                     Margin="328,0,0,0" 
+                     VerticalAlignment="Center" 
                      Width="250" 
                      Height="30" 
                      Padding="5" 
                      FontSize="14" 
                      BorderBrush="#CCCCCC" 
                      Background="#F9F9F9" />
-        <Separator Height="1" Margin="332,215,222,218" Background="#FFFFC14E"/>
+        <Separator Height="1" Margin="328,267,226,206" Background="#FFFFC14E"/>
         <!-- Role Selection -->
         <Label Content="Select Role" 
                HorizontalAlignment="Left" 
-               Margin="332,231,0,0" 
+               Margin="332,283,0,0" 
                Padding="0"
                VerticalAlignment="Top" 
                FontSize="14" 
@@ -74,7 +91,7 @@
                Foreground="#4A4A4A" />
         <Border HorizontalAlignment="Left" 
         VerticalAlignment="Top" 
-        Margin="332,265,0,0" 
+        Margin="328,307,0,0" 
         Background="#FFFFE5B4" 
         CornerRadius="10" 
         BorderBrush="#CCCCCC" 
@@ -109,8 +126,8 @@
 
 
         <!-- Buttons Section -->
-        <Button x:Name="LoginButton" 
-                Content="Log In" 
+        <Button x:Name="SignInButton" 
+                Content="Sign in" 
                 HorizontalAlignment="Left" 
                 Margin="523,389,0,0" 
                 VerticalAlignment="Top" 
@@ -120,7 +137,8 @@
                 Foreground="Black" 
                 FontSize="14" 
                 FontWeight="Bold" 
-                BorderThickness="0" />
+                BorderThickness="0" 
+                Click="SignIn"/>
 
         <Button Content="Exit" 
                 HorizontalAlignment="Left" 
@@ -133,5 +151,6 @@
                 FontSize="14" 
                 FontWeight="Bold" 
                 BorderThickness="0"/>
+        
     </Grid>
 </Window>
