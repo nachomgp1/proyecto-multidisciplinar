@@ -60,7 +60,9 @@ namespace proyecto_multidisciplinar.view
 
         private void Button_Click_User_Management(object sender, RoutedEventArgs e)
         {
-
+            UserManagementOptions managementOptionsWindow = new UserManagementOptions(username);
+            this.Close();
+            managementOptionsWindow.Show();
         }
 
         private void Button_Click_Logs(object sender, RoutedEventArgs e)
