@@ -666,7 +666,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
 
     // Llenar el ComboBox de rutas base con los directorios disponibles
     var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
-    var rutasBase = ftp.ListDirectories(userDirectory); // Directorios base
+    var rutasBase = ftp.ListDirectories("/"); // Directorios base
 
     foreach (var ruta in rutasBase)
     {
@@ -686,22 +686,16 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
                 return;
             }
 
-            // Obtener los permisos de los directorios de la base de datos
-            var permisos = ControlFtp.ObtenerPermisos(rutaBase); // Aquí usamos el método que accede a la base de datos
-
-            permisosListBox.Items.Clear(); // Limpiar el ListBox antes de agregar nuevos ítems
-
-            foreach (var entry in permisos)
+            if (rutaBase != username)
             {
-                string carpeta = entry.Key;
-                string permiso = entry.Value;
-
-                bool puedeLeer = permiso.Contains("R"); // Permiso de lectura
-                bool puedeEscribir = permiso.Contains("W"); // Permiso de escritura
-
-                // Agregar los permisos al ListBox para mostrar
-                permisosListBox.Items.Add($"Carpeta: {carpeta} - Lectura: {(puedeLeer ? "Sí" : "No")} - Escritura: {(puedeEscribir ? "Sí" : "No")}");
+                permisosListBox.Items.Add($"Carpeta: {rutaBase} - No tienes permisos sobre la carpeta.");
             }
+            else
+            {
+                // Agregar los permisos al ListBox para mostrar
+                permisosListBox.Items.Add($"Carpeta: {rutaBase} - tienes permisos sobre la carpeta.");
+            }
+
         }
         catch (Exception ex)
         {
