@@ -100,17 +100,29 @@ namespace proyecto_multidisciplinar
                 string userIp = GetLocalIPAddress();
 
                 conexion.AbrirConexion();
+                string email=null;
+                //add the email selecting with a query
+                string queryEmail = "SELECT email FROM \"Users\" WHERE username LIKE '"+adminUser+"'; ";
+                NpgsqlDataReader reader = conexion.EjecutarConsulta(queryEmail);
+                if (reader.Read())
+                {
+                   email = reader.GetString(0);
+                }
+                conexion.CerrarConexion();
 
-               //falta añadir el email
-                string queryInsert = "INSERT INTO \"Logs\" (username, action, date, user_ip) " +
-                                     "VALUES (@username, @action, @date, @user_ip)";
+                conexion.AbrirConexion();
+
+              
+                string queryInsert = "INSERT INTO \"Logs\" (username, action, date, user_ip, user_email) " +
+                                     "VALUES (@username, @action, @date, @user_ip, @user_email)";
 
                
                 NpgsqlParameter[] parameters = new NpgsqlParameter[] {
             new NpgsqlParameter("@username", adminUser), 
             new NpgsqlParameter("@action", action),
             new NpgsqlParameter("@date", currentDate),
-            new NpgsqlParameter("@user_ip", userIp)
+            new NpgsqlParameter("@user_ip", userIp), 
+            new NpgsqlParameter("@user_email", email)
         };
 
                 
