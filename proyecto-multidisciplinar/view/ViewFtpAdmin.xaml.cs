@@ -84,7 +84,7 @@ public partial class ViewFtpAdmin : Window
     private void AccionPermisos(object sender, RoutedEventArgs e)
     {
         BotonesFunciones.Children.Clear(); 
-    Funcion.Children.Clear(); // Limpiar los controles de la interfaz si ya hay algo cargado
+        Funcion.Children.Clear(); // Limpiar los controles de la interfaz si ya hay algo cargado
 
     // Crear la interfaz para gestionar permisos
     StackPanel gestionPanel = new StackPanel
@@ -106,28 +106,31 @@ public partial class ViewFtpAdmin : Window
         Width = 200,
         Margin = new Thickness(10)
     };
-    grupoComboBox.Items.Add("Departamento A");
-    grupoComboBox.Items.Add("Departamento B");
-
-    // Crear la etiqueta para el ComboBox de usuario
-    Label usuarioLabel = new Label
+    try
     {
-        Content = "Selecciona un Usuario",
-        Margin = new Thickness(10)
-    };
+        Conexion conexion = new Conexion();
+        conexion.AbrirConexion();
+        string sql = "select * from Groups";
 
-    // Crear ComboBox para seleccionar usuario (se cargan los usuarios de las carpetas)
-    ComboBox usuarioComboBox = new ComboBox
+        try
+        {
+            var reader = conexion.EjecutarConsulta(sql);
+
+            while (reader.Read())
+            {
+                grupoComboBox.Items.Add(reader["name"].ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al ejecutar el sql -> Error:{ex.Message}");
+        }
+
+    }catch(Exception ex)
     {
-        Width = 200,
-        Margin = new Thickness(10)
-    };
-
-    // Aquí puedes cargar los usuarios. Suponemos que tienes una lista de usuarios, por ejemplo:
-    usuarioComboBox.Items.Add("Juan");
-    usuarioComboBox.Items.Add("Pedro");
-    usuarioComboBox.Items.Add("Ana");
-
+        Console.WriteLine($"No se ha podido conectar -> Error:{ex.Message}");
+    }
+    
     // Crear la etiqueta para el ComboBox de carpetas
     Label carpetaLabel = new Label
     {
@@ -141,8 +144,14 @@ public partial class ViewFtpAdmin : Window
         Width = 200,
         Margin = new Thickness(10)
     };
-    carpetaComboBox.Items.Add("Carpeta A");
-    carpetaComboBox.Items.Add("Carpeta B");
+    
+    // Añadir las carpetas del servidor ftp
+    
+    
+    
+    
+    
+   
 
     // Crear Button para asignar permisos
     Button asignarPermisosButton = new Button
@@ -152,27 +161,26 @@ public partial class ViewFtpAdmin : Window
         Margin = new Thickness(10)
     };
     var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    
     asignarPermisosButton.Click += (s, args) =>
     {
         string grupoSeleccionado = (string)grupoComboBox.SelectedItem;
-        string usuarioSeleccionado = (string)usuarioComboBox.SelectedItem;
         string carpetaSeleccionada = (string)carpetaComboBox.SelectedItem;
 
-        if (!string.IsNullOrEmpty(grupoSeleccionado) && !string.IsNullOrEmpty(usuarioSeleccionado) && !string.IsNullOrEmpty(carpetaSeleccionada))
+        if (!string.IsNullOrEmpty(grupoSeleccionado) && !string.IsNullOrEmpty(carpetaSeleccionada))
         {
             // Asignar permisos de grupo
             ftp.AsignarPermisosGrupo(grupoSeleccionado, new List<string> { carpetaSeleccionada });
 
             // Asignar permisos individuales
-            ftp.AsignarPermisosUsuario(usuarioSeleccionado, carpetaSeleccionada, "lectura"); // Puedes cambiar el permiso ("lectura", "escritura")
+            //ftp.AsignarPermisosUsuario( carpetaSeleccionada, "lectura"); // Puedes cambiar el permiso ("lectura", "escritura")
         }
     };
 
     // Agregar todos los controles al panel
     gestionPanel.Children.Add(grupoLabel);
     gestionPanel.Children.Add(grupoComboBox);
-    gestionPanel.Children.Add(usuarioLabel);
-    gestionPanel.Children.Add(usuarioComboBox);
+
     gestionPanel.Children.Add(carpetaLabel);
     gestionPanel.Children.Add(carpetaComboBox);
     gestionPanel.Children.Add(asignarPermisosButton);
@@ -906,23 +914,9 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
                 MessageBox.Show("Por favor, seleccione una ruta.");
                 return;
             }
-
-            // Obtener los permisos de los directorios de la base de datos
-            var permisos = ControlFtp.ObtenerPermisos(rutaBase); // Aquí usamos el método que accede a la base de datos
-
-            permisosListBox.Items.Clear(); // Limpiar el ListBox antes de agregar nuevos ítems
-
-            foreach (var entry in permisos)
-            {
-                string carpeta = entry.Key;
-                string permiso = entry.Value;
-
-                bool puedeLeer = permiso.Contains("R"); // Permiso de lectura
-                bool puedeEscribir = permiso.Contains("W"); // Permiso de escritura
-
+            
                 // Agregar los permisos al ListBox para mostrar
-                permisosListBox.Items.Add($"Carpeta: {carpeta} - Lectura: {(puedeLeer ? "Sí" : "No")} - Escritura: {(puedeEscribir ? "Sí" : "No")}");
-            }
+                permisosListBox.Items.Add($"Carpeta: {rutaBase} - Permisos: Write - Read - Create - Delete");
         }
         catch (Exception ex)
         {
