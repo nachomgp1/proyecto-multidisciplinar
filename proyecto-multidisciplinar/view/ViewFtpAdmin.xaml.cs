@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using Npgsql;
 using proyecto_multidisciplinar.model;
 
 namespace proyecto_multidisciplinar.view;
@@ -110,7 +111,7 @@ public partial class ViewFtpAdmin : Window
     {
         Conexion conexion = new Conexion();
         conexion.AbrirConexion();
-        string sql = "select * from Groups";
+        string sql = "SELECT * FROM \"Users\" ";
 
         try
         {
@@ -118,8 +119,9 @@ public partial class ViewFtpAdmin : Window
 
             while (reader.Read())
             {
-                grupoComboBox.Items.Add(reader["name"].ToString());
+                grupoComboBox.Items.Add(reader["username"].ToString());
             }
+            conexion.CerrarConexion();
         }
         catch (Exception ex)
         {
@@ -164,7 +166,7 @@ public partial class ViewFtpAdmin : Window
         Width = 200,
         Margin = new Thickness(10)
     };
-    var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    //var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
     
     asignarPermisosButton.Click += (s, args) =>
     {
@@ -177,11 +179,16 @@ public partial class ViewFtpAdmin : Window
             {
                 Conexion conexion = new Conexion();
                 conexion.AbrirConexion();
-                string sql = $"INSERT INTO Folders (name, acces_user) values ({carpetaSeleccionada}, {userSeleccionado} )";
+                string query = "INSERT INTO \"Folders\" ( name, acces_user) VALUES (@carpeta, @user)";
 
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
+                {
+                    new NpgsqlParameter("@carpeta", carpetaSeleccionada),
+                    new NpgsqlParameter("@user", userSeleccionado),
+                };
                 try
                 {
-                    conexion.EjecutarNonQuery(sql);
+                    conexion.EjecutarNonQuery(query, parameters);
                     
                 }
                 catch (Exception ex)
@@ -936,7 +943,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
             }
             
                 // Agregar los permisos al ListBox para mostrar
-                permisosListBox.Items.Add($"Carpeta: {rutaBase} - Permisos: Write - Read - Create - Delete");
+                permisosListBox.Items.Add($"Carpeta: {rutaBase} - Tienes permiso de administrador");
         }
         catch (Exception ex)
         {
