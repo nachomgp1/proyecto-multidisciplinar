@@ -18,19 +18,24 @@ namespace proyecto_multidisciplinar.view
         {
             InitializeComponent();
             this.username = username;
-            conexion = new Conexion(); 
+            conexion = new Conexion();
             LoadData();
         }
-
+        public void Exit_Click(object sernder, RoutedEventArgs e)
+        {
+            PrincipalMenuAdmin viewAdmid = new PrincipalMenuAdmin(username);
+            this.Close();
+            viewAdmid.Show();
+        }
         private void LoadData()
         {
             Types = new ObservableCollection<TypeRecord>();
 
             try
             {
-                if (conexion.AbrirConexion()) 
+                if (conexion.AbrirConexion())
                 {
-                   
+
                     string userQuery = "SELECT messages_left FROM \"Users\" WHERE username = 'User'";
                     using (var reader = conexion.EjecutarConsulta(userQuery))
                     {
@@ -41,7 +46,7 @@ namespace proyecto_multidisciplinar.view
                         }
                     }
 
-                   
+
                     string typesQuery = "SELECT id, name, \"write\", \"read\", \"create\", \"delete\" FROM \"Types\";";
                     using (var reader = conexion.EjecutarConsulta(typesQuery))
                     {
@@ -68,7 +73,7 @@ namespace proyecto_multidisciplinar.view
             }
             finally
             {
-                conexion.CerrarConexion(); 
+                conexion.CerrarConexion();
             }
         }
 
@@ -78,7 +83,7 @@ namespace proyecto_multidisciplinar.view
             {
                 if (conexion.AbrirConexion())
                 {
-                    
+
                     foreach (var record in Types)
                     {
                         string updateQuery = @"
@@ -97,7 +102,7 @@ namespace proyecto_multidisciplinar.view
                             new NpgsqlParameter("@id", record.Id));
                     }
 
-                    
+
                     int newMessageLimit = int.Parse(MessageLimitTextBox.Text);
                     string userUpdateQuery = @"
                         UPDATE ""Users""
@@ -108,10 +113,10 @@ namespace proyecto_multidisciplinar.view
                         new NpgsqlParameter("@newMessageLimit", newMessageLimit));
 
                     MessageBox.Show("Cambios guardados con éxito.");
-                    
 
 
-                    string userIndividualQuery = "SELECT username, messages_left from \"Users\";";
+
+                    string userIndividualQuery = "SELECT username, messages_left FROM \"Users\";";
                     using (var reader = conexion.EjecutarConsulta(userIndividualQuery))
                     {
                         while (reader.Read())
@@ -140,7 +145,7 @@ namespace proyecto_multidisciplinar.view
 
                                 conexion.EjecutarNonQuery(updateQuery);
                             }
-                            catch (Exception ex) 
+                            catch (Exception ex)
                             {
                                 MessageBox.Show("Cannot upload the message limit");
                             }
@@ -158,7 +163,7 @@ namespace proyecto_multidisciplinar.view
             }
             finally
             {
-                conexion.CerrarConexion(); 
+                conexion.CerrarConexion();
             }
         }
     }
