@@ -89,7 +89,7 @@ namespace proyecto_multidisciplinar.view
                 if (authenticatedEmail.Equals(expectedEmail, StringComparison.OrdinalIgnoreCase))
                 {
                     // Abrir ventana de correos si los correos coinciden
-                    EmailsWindow emailsWindow = new EmailsWindow(service, credential, this);
+                    EmailsWindow emailsWindow = new EmailsWindow(service, credential, this,this.username);
                     emailsWindow.Show();
                     this.Hide();
                 }

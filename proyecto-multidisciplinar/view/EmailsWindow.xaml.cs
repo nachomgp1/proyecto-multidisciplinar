@@ -16,15 +16,17 @@ using System.Windows.Media.Imaging;
 
 namespace proyecto_multidisciplinar.view
 {
+
     public partial class EmailsWindow : Window
     {
         private GmailService gmailService;
         private UserCredential credential;
         private Window ventanaAnterior;
-       
-        public EmailsWindow(GmailService service, UserCredential userCredential, Window ventanaAnterior)
+        private string? username;
+
+        public EmailsWindow(GmailService service, UserCredential userCredential, Window ventanaAnterior, string? username)
         {
-          
+            this.username = username;
             gmailService = service;
             credential = userCredential;
             this.ventanaAnterior = ventanaAnterior;
@@ -143,7 +145,7 @@ namespace proyecto_multidisciplinar.view
         private void EnviarCorreo_Click(object sender, RoutedEventArgs e)
         {
             // Abrir ventana de envío de correo
-            EnviarCorreoWindow enviarCorreoWindow = new EnviarCorreoWindow(gmailService);
+            EnviarCorreoWindow enviarCorreoWindow = new EnviarCorreoWindow(gmailService,this.username);
             enviarCorreoWindow.Show();
         }
         private async void ActualizarCorreos_Click(object sender, RoutedEventArgs e)

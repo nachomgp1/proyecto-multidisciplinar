@@ -21,8 +21,35 @@ namespace proyecto_multidisciplinar.model
                           "SSL Mode=Require;";
             connection = new NpgsqlConnection(connectionString);
             }
-
-            public bool AbrirConexion()
+        public int EjecutarNonQuery(string query)
+        {
+            try
+            {
+                using (var command = new NpgsqlCommand(query, connection))
+                {
+                    return command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error executing non-query: {ex.Message}");
+            }
+        }
+        public object EjecutarConsultaEscalar(string query)
+        {
+            try
+            {
+                using (var command = new NpgsqlCommand(query, connection))
+                {
+                    return command.ExecuteScalar();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error executing scalar query: {ex.Message}");
+            }
+        }
+        public bool AbrirConexion()
             {
                 try
                 {
@@ -69,23 +96,23 @@ namespace proyecto_multidisciplinar.model
                 }
             }
 
-            public void EjecutarNonQuery(string query, params NpgsqlParameter[] parametros)
+        public void EjecutarNonQuery(string query, params NpgsqlParameter[] parametros)
+        {
+            NpgsqlCommand command = new NpgsqlCommand(query, connection);
+            foreach (var parametro in parametros)
             {
-                NpgsqlCommand command = new NpgsqlCommand(query, connection);
-                foreach (var parametro in parametros)
-                {
-                    command.Parameters.Add(parametro);
-                }
-                try
-                {
-                    command.ExecuteNonQuery();
-                    Console.WriteLine("Operación realizada con éxito");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error al ejecutar la operación: " + e.Message);
-                }
+                command.Parameters.Add(parametro);
+            }
+            try
+            {
+                command.ExecuteNonQuery();
+                Console.WriteLine("Operación realizada con éxito");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error al ejecutar la operación: " + e.Message);
             }
         }
+    }
     }
 

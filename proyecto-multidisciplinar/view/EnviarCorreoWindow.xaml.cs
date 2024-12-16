@@ -12,16 +12,19 @@ using MimeKit.Utils;
 using Npgsql;
 using proyecto_multidisciplinar.model;
 using static System.Net.Mime.MediaTypeNames;
+using System.Data;
 
 namespace proyecto_multidisciplinar.view
 {
     public partial class EnviarCorreoWindow : Window
     {
+        private string? username;
         private GmailService gmailService;
         private ObservableCollection<model.ArchivoAdjunto> archivosAdjuntos;
 
-        public EnviarCorreoWindow(GmailService service)
+        public EnviarCorreoWindow(GmailService service, string? username)
         {
+            this.username = username;
             gmailService = service;
             InitializeComponent();
 
@@ -112,54 +115,52 @@ namespace proyecto_multidisciplinar.view
         }
         private bool CheckHavemsgleft()
         {
-            Conexion conexion = new Conexion();
-            bool resultado = false;
-
-            if (conexion.AbrirConexion())
+            try
             {
-                try
-                { 
-                    string email = "current_user_email@example.com"; 
+                Conexion conexion = new Conexion();
+                bool resultado = false;
 
-                    string query = "SELECT messages_left FROM \"Users\" WHERE email = @email";
-
-                  
-                    NpgsqlParameter paramUser = new NpgsqlParameter("@gmail", email);
-
-                    NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser);
-
-                    if (reader != null)
+                if (conexion.AbrirConexion())
+                {
+                    try
                     {
-                            if (reader.GetInt32(5) >0)
+                        // Retrieve messages_left using scalar query
+                        string queryCheck = "SELECT messages_left FROM \"Users\" WHERE username = '" + username + "';";
+                        int messagesLeft = Convert.ToInt32(conexion.EjecutarConsultaEscalar(queryCheck));
+
+                        if (messagesLeft > 0)
+                        {
+                            // Update messages_left
+                            string queryUpdate = "UPDATE \"Users\" SET messages_left = messages_left - 1 WHERE username = '" + username + "';";
+
+                            if (conexion.EjecutarNonQuery(queryUpdate) > 0)
                             {
-                            string queryUpdate = "UPDATE \"Users\" SET messages_left = messages_left - 1 WHERE email = @email";
-                            conexion.EjecutarNonQuery(queryUpdate, paramUser);
-
-                             
-                            
-
-                            resultado = true;
-                        }
-                        
- 
+                                resultado = true;
+                            }
                         }
                     }
-                
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error checking messages left: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error processing user messages: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        resultado = false;
+                    }
+                    finally
+                    {
+                        conexion.CerrarConexion();
+                    }
                 }
-                finally
+                else
                 {
-                    conexion.CerrarConexion();
+                    MessageBox.Show("Error connecting to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }
-            else
-            {
-                MessageBox.Show("Error connecting to database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
 
-            return resultado;
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error retrieving user profile: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
         }
         private async void EnviarCorreo_Click(object sender, RoutedEventArgs e)
         {
@@ -215,6 +216,7 @@ namespace proyecto_multidisciplinar.view
                         // Enviar correo
                         await gmailService.Users.Messages.Send(mensaje, "me").ExecuteAsync();
 
+                        Enviarlog();
                         MessageBox.Show("Correo enviado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                         this.Close();
                     }
@@ -230,7 +232,11 @@ namespace proyecto_multidisciplinar.view
              }
 
         }
-        
+
+        private void Enviarlog()
+        {
+           
+        }
 
         private void Cancelar_Click(object sender, RoutedEventArgs e)
         {
