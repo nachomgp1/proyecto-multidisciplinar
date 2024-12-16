@@ -148,10 +148,14 @@ public partial class ViewFtpAdmin : Window
     // Añadir las carpetas del servidor ftp
     
     
-    
-    
-    
-   
+    // Llenar el ComboBox con los directorios disponibles en el FTP
+    var ftp1 = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+    var directorios = ftp1.ListDirectories("/");
+
+    foreach (var dir in directorios)
+    {
+        carpetaComboBox.Items.Add(dir);
+    }
 
     // Crear Button para asignar permisos
     Button asignarPermisosButton = new Button
@@ -164,16 +168,31 @@ public partial class ViewFtpAdmin : Window
     
     asignarPermisosButton.Click += (s, args) =>
     {
-        string grupoSeleccionado = (string)grupoComboBox.SelectedItem;
+        string userSeleccionado = (string)grupoComboBox.SelectedItem;
         string carpetaSeleccionada = (string)carpetaComboBox.SelectedItem;
 
-        if (!string.IsNullOrEmpty(grupoSeleccionado) && !string.IsNullOrEmpty(carpetaSeleccionada))
+        if (!string.IsNullOrEmpty(userSeleccionado) && !string.IsNullOrEmpty(carpetaSeleccionada))
         {
-            // Asignar permisos de grupo
-            ftp.AsignarPermisosGrupo(grupoSeleccionado, new List<string> { carpetaSeleccionada });
+            try
+            {
+                Conexion conexion = new Conexion();
+                conexion.AbrirConexion();
+                string sql = $"INSERT INTO Folders (name, acces_user) values ({carpetaSeleccionada}, {userSeleccionado} )";
 
-            // Asignar permisos individuales
-            //ftp.AsignarPermisosUsuario( carpetaSeleccionada, "lectura"); // Puedes cambiar el permiso ("lectura", "escritura")
+                try
+                {
+                    conexion.EjecutarNonQuery(sql);
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al ejecutar el sql -> Error:{ex.Message}");
+                }
+
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"No se ha podido conectar -> Error:{ex.Message}");
+            }
         }
     };
 
@@ -324,6 +343,7 @@ public partial class ViewFtpAdmin : Window
     {
         BotonesFunciones.Children.Clear();
         Funcion.Children.Clear();
+        
     }
 
     /**
