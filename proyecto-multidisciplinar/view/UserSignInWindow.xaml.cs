@@ -75,9 +75,9 @@ namespace proyecto_multidisciplinar
 
                         if (!userType.Equals("2")) 
                         {
-                            
-                            queryInsert = "INSERT INTO \"Users\" (username, email, password, sent_messages, type, group) " +
-                                          "VALUES (@username, @email, @password, @sentMessages, @type, NULL);";
+
+                             queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
+                                     "VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
 
                             NpgsqlParameter[] parameters = new NpgsqlParameter[] {
                                  new NpgsqlParameter("@username", user),
@@ -86,10 +86,16 @@ namespace proyecto_multidisciplinar
                                 new NpgsqlParameter("@sentMessages",message_left),
                                 new NpgsqlParameter("@type", userType),
                                 };
-                            MessageBox.Show($"username: {user}, email: {email}, password: {password}, sentMessages: 0, type: {userType}, group: NULL");
-
-                            conexion.EjecutarNonQuery(queryInsert,parameters);
-                            
+                            try
+                            {
+                                MessageBox.Show($"username: {user}, email: {email}, password: {password}, sentMessages: {message_left}, type: {userType}, group: NULL");
+                                conexion.EjecutarNonQuery(queryInsert, parameters);
+                                MessageBox.Show("Datos insertados correctamente.");
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error al insertar en la base de datos: {ex.Message}");
+                            }
                         }
                         else // if is type group
                         {
