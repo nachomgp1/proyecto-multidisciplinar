@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Npgsql;
 using proyecto_multidisciplinar.model;
 using proyecto_multidisciplinar;
 using static proyecto_multidisciplinar.model.Conexion;
@@ -29,9 +30,8 @@ public partial class ViewFtpUser : Window
         this.username = username;        
         userDirectory = $"/{username}";
         usernameLabel.Content = "Logged user:" + " " + username;
-
     }
-
+    
     public void AccionArchivos(object sender, RoutedEventArgs e)
     {
         BotonesFunciones.Children.Clear();
