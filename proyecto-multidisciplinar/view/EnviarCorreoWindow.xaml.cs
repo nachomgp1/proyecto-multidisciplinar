@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using proyecto_multidisciplinar.model;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -232,10 +233,9 @@ namespace proyecto_multidisciplinar.view
              }
 
         }
-
         private void Enviarlog()
         {
-           
+            Logs.InsertLogs(username,"Has sent a Mail",DateTime.Now,MainWindow.GetLocalIpAdress(),MainWindow.GetEmail(username));
         }
 
         private void Cancelar_Click(object sender, RoutedEventArgs e)
