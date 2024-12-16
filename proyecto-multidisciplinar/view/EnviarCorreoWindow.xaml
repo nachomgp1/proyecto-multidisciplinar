@@ -2,9 +2,9 @@
     x:Class="proyecto_multidisciplinar.view.EnviarCorreoWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Enviar Correo" Icon="../Images/logo.PNG"
+    Title="Enviar Correo" ResizeMode="NoResize"
     Width="500"
-    Height="800"
+    Height="825"
     WindowStartupLocation="CenterScreen">
     <Window.Background>
         <LinearGradientBrush>

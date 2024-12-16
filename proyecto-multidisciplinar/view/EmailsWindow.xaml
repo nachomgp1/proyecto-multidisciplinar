@@ -38,7 +38,7 @@
 
 
             <!--  ListView con Scroll habilitado automáticamente  -->
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
                 <ListView x:Name="emailListView">
                     <ListView.View>
                         <GridView>
