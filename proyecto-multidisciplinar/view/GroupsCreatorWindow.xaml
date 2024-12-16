@@ -1,0 +1,61 @@
+﻿<Window x:Class="proyecto_multidisciplinar.GroupsCreatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Groups Creator" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <!-- Background image -->
+        <Image Source="pack://application:,,,/images/solHorizontal.jpg"
+               Stretch="UniformToFill"
+               
+               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+
+        <!-- Main content -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+            <!-- Title Label -->
+            <Label Content="Create Group" 
+                   FontSize="36" 
+                   FontWeight="Bold"
+                   Foreground="#2C3E50" 
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+            <!-- TextBox with blurred background -->
+            <Border CornerRadius="10" Background="#FF684310" Padding="2" Margin="0,0,0,20">
+                <TextBox Height="40" FontSize="16" Margin="5" 
+                         VerticalContentAlignment="Center"
+                         x:Name="GroupNameTextBox" 
+                         
+                         Foreground="#34495E"/>
+            </Border>
+
+            <!-- Action Button -->
+            <Button Content="Create Group" 
+                    HorizontalAlignment="Right" 
+  
+                    VerticalAlignment="Top" 
+                    Width="100" 
+                    Height="35" 
+                    Background="#FAD6A5" 
+                    Foreground="Black" 
+                    FontSize="14" 
+                    FontWeight="Bold" 
+                    BorderThickness="0" 
+                    Margin="0,0,0,10"
+                    Click="CreateGroupButton_Click"/>
+            <Button Content="Exit" 
+                    Width="100" 
+                    Height="35" 
+                    HorizontalAlignment="Left"
+                    Margin="0,-50,0,0"
+                    Background="#FAD6A5" 
+                    Foreground="Black" 
+                    FontSize="14" 
+                    FontWeight="Bold" 
+                    BorderThickness="0"
+                    Click="Exit_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,71 @@
+﻿<Window x:Class="proyecto_multidisciplinar.view.UserManagementOptions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:proyecto_multidisciplinar.view"
+        mc:Ignorable="d"
+        Title="UserManagementOptions" Height="450" Width="800">
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="pack://application:,,,/images/solHorizontal.jpg"
+               Stretch="UniformToFill"
+               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+
+        <!-- Main Content -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="350">
+            <!-- Title Label -->
+            <Label Content="User Options" 
+                   FontSize="36" 
+                   FontWeight="Bold"
+                   Foreground="#2C3E50" 
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+            <!-- User Permissions Button -->
+            <Button Content="User Permissions" 
+                    Width="200" 
+                    Height="50" 
+                    Margin="0,0,0,20"
+                    Background="#FAD6A5" 
+                    Foreground="Black" 
+                    FontSize="16" 
+                    FontWeight="Bold" 
+                    BorderThickness="0"
+                   Click="UserPermissions_Click"/>
+
+            <!-- User Creator Button -->
+            <Button Content="User Creator" 
+                    Width="200" 
+                    Height="50" 
+                    Margin="0,0,0,20"
+                    Background="#FAD6A5" 
+                    Foreground="Black" 
+                    FontSize="16" 
+                    FontWeight="Bold" 
+                    BorderThickness="0"
+                    Click="UserCreation_Click"/>
+            <Button Content="Create Group" 
+                    Width="200" 
+                    Height="50" 
+                    Margin="0,0,0,20"
+                    Background="#FAD6A5" 
+                    Foreground="Black" 
+                    FontSize="16" 
+                    FontWeight="Bold" 
+                    BorderThickness="0"
+                    Click="CreateGroup_Click"/>
+            <!-- Exit Button -->
+            <Button Content="Exit" 
+                    Width="100" 
+                    Height="35" 
+                    HorizontalAlignment="Center"
+                    Background="#FAD6A5" 
+                    Foreground="Black" 
+                    FontSize="14" 
+                    FontWeight="Bold" 
+                    BorderThickness="0"
+                    Click="Exit_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

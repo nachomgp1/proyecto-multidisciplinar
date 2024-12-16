@@ -19,6 +19,8 @@
     <None Remove="images\logo.png" />
     <None Remove="images\refresh.png" />
     <None Remove="images\salida.png" />
+    <None Remove="images\sol2.jpg" />
+    <None Remove="images\solHorizontal.jpg" />
     <None Remove="images\user-icon.png" />
   </ItemGroup>
 
@@ -61,6 +63,8 @@
     <Resource Include="images\salida.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\sol2.jpg" />
+    <Resource Include="images\solHorizontal.jpg" />
     <Resource Include="images\user-icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
