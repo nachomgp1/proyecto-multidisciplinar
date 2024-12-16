@@ -38,12 +38,18 @@ namespace proyecto_multidisciplinar.view
 
         private void Button_Click_Ftp(object sender, RoutedEventArgs e)
         {
+            ViewFtpUser viewFtpUser = new ViewFtpUser(username);
+            this.Close();
+            viewFtpUser.Show();
 
 
         }
 
         private void Button_Click_Email(object sender, RoutedEventArgs e)
         {
+            MainWindowMail mainMailView = new MainWindowMail(username);
+            this.Close();
+            mainMailView.Show();
 
         }
 
