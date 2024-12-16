@@ -246,7 +246,7 @@ public partial class ViewFtpAdmin : Window
         var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
 
         // Obtener todas las carpetas del FTP (esto debería obtenerse de alguna forma, por ejemplo de una base de datos o estructura predefinida)
-        List<string> carpetas = ftp.ListFiles("/");
+        List<string> carpetas = ftp.ListDirectories("/");
 
         // Crear la lista de objetos para el DataGrid
         List<dynamic> data = new List<dynamic>();
