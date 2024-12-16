@@ -2,7 +2,7 @@
     x:Class="proyecto_multidisciplinar.view.EnviarCorreoWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Enviar Correo"
+    Title="Enviar Correo" Icon="../Images/logo.PNG"
     Width="500"
     Height="800"
     WindowStartupLocation="CenterScreen">

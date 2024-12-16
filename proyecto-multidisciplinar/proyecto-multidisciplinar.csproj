@@ -16,6 +16,7 @@
     <None Remove="images\imagedef.jpg" />
     <None Remove="images\imagedef3.jpg" />
     <None Remove="images\loading.gif" />
+    <None Remove="images\logo.png" />
     <None Remove="images\refresh.png" />
     <None Remove="images\salida.png" />
     <None Remove="images\user-icon.png" />
@@ -49,6 +50,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\loading.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\refresh.png">
