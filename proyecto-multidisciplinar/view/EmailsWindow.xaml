@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Mis Correos"
-    Width="800"
+    Width="850"
     Height="400">
     <Window.Background>
         <LinearGradientBrush>
@@ -54,21 +54,32 @@
                                 Width="105"
                                 DisplayMemberBinding="{Binding Hour}"
                                 Header="Date" />
-                            <GridViewColumn Width="70" Header="Acctions">
+                            <GridViewColumn Width="140" Header="Actions">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button
-                                            Margin="5,0"
-                                            Background="#ffbeba"
-                                            Click="EliminarCorreo_Click"
-                                            CommandParameter="{Binding MessageId}"
-                                            Content="Eliminar" />
-
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- El botón "Eliminar" -->
+                                            <Button
+                                    Margin="5,0"
+                                    Background="#ffbeba"
+                                    Click="EliminarCorreo_Click"
+                                    CommandParameter="{Binding MessageId}"
+                                    Content="Eliminar" />
+                                            <!-- El botón "No Leído" -->
+                                            <Button
+                                    x:Name="NoLeidoButton"
+                                     Margin="5,0"
+                                    Background="#d9e0f5"
+                                    Click="MarcarNoLeido_Click"
+                                    CommandParameter="{Binding MessageId}"
+                                    Content="No Leído" />
+                                        </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                         </GridView>
                     </ListView.View>
+                    
                 </ListView>
             </ScrollViewer>
 

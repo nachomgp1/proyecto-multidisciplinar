@@ -12,6 +12,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
 
 
 namespace proyecto_multidisciplinar.view
@@ -82,7 +85,8 @@ namespace proyecto_multidisciplinar.view
                             MessageId = message.Id,
                             From = from,
                             Hour = dateTime, // Ahora incluye fecha y hora
-                            Subject = subject
+                            Subject = subject,
+                            IsRead = false
                         });
                     }
 
@@ -145,7 +149,7 @@ namespace proyecto_multidisciplinar.view
         private void EnviarCorreo_Click(object sender, RoutedEventArgs e)
         {
             // Abrir ventana de envío de correo
-            EnviarCorreoWindow enviarCorreoWindow = new EnviarCorreoWindow(gmailService,this.username);
+            EnviarCorreoWindow enviarCorreoWindow = new EnviarCorreoWindow(gmailService, this.username);
             enviarCorreoWindow.Show();
         }
         private async void ActualizarCorreos_Click(object sender, RoutedEventArgs e)
@@ -167,12 +171,62 @@ namespace proyecto_multidisciplinar.view
             var selectedEmail = emailListView.SelectedItem as EmailItem;
             if (selectedEmail == null) return;
 
+            // Mark email as read
+            selectedEmail.IsRead = true;
+            emailListView.Items.Refresh();
+
             // Open email details window
             var emailDetailsWindow = new EmailDetailsWindow(gmailService, selectedEmail.MessageId);
             emailDetailsWindow.Show();
+
+            // Find the button in the corresponding row and change its text
+            var itemContainer = emailListView.ItemContainerGenerator.ContainerFromItem(selectedEmail) as ListViewItem;
+            if (itemContainer != null)
+            {
+                // Find the Button specifically for "No Leído"
+                var noLeidoButton = FindNoLeidoButtonInRow(itemContainer);
+                if (noLeidoButton != null)
+                {
+                        noLeidoButton.Content = "Leído";
+                }
+            }
         }
 
-        
+        // Helper method to find the "No Leído" button in the row
+        private Button FindNoLeidoButtonInRow(ListViewItem itemContainer)
+        {
+            // Traverse the visual tree of the ListViewItem to find the Button with the x:Name "NoLeidoButton"
+            var stackPanel = FindVisualChild<StackPanel>(itemContainer);
+            if (stackPanel != null)
+            {
+                return stackPanel.Children.OfType<Button>().FirstOrDefault(b => b.Name == "NoLeidoButton");
+            }
+            return null;
+        }
+
+
+        // Helper method to find a visual child of a specific type
+        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+{
+    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+    {
+        var child = VisualTreeHelper.GetChild(parent, i);
+        if (child is T)
+        {
+            return (T)child;
+        }
+
+        var result = FindVisualChild<T>(child);
+        if (result != null)
+        {
+            return result;
+        }
+    }
+    return null;
+}
+
+
+
         private async Task CargarCorreosAsync()
         {
             try
@@ -256,19 +310,38 @@ namespace proyecto_multidisciplinar.view
                 {
                     Directory.Delete(folderPath, true);
                 }
-                
+
                 // Cerrar ventana actual
                 this.Close();
                 if (ventanaAnterior != null)
                 {
                     ventanaAnterior.Show();
                 }
-               
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cerrar sesión: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void MarcarNoLeido_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null)
+                return;
+
+            var messageId = button.CommandParameter.ToString();
+            MessageBox.Show($"Correo {messageId} marcado como no leído");
+            // Cambiar el texto del botón
+            if (button.Content.ToString() == "Leído")
+            {
+                button.Content = "No Leído";
+            }
+            else
+            {
+                button.Content = "Leído";
+            }
+        }
+
+
     }
 }
