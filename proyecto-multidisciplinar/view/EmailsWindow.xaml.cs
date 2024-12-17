@@ -51,13 +51,13 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-                // Show loading gif and hide ListView
+               
                 emailListView.Visibility = Visibility.Collapsed;
                 loadingImage.Visibility = Visibility.Visible;
 
-                // Obtener lista de correos
+              
                 var request = gmailService.Users.Messages.List("me");
-                request.MaxResults = 50; // Limitar a 50 correos
+                request.MaxResults = 50; 
                 var response = await request.ExecuteAsync();
 
                 if (response.Messages != null)
@@ -68,7 +68,7 @@ namespace proyecto_multidisciplinar.view
                         var emailRequest = gmailService.Users.Messages.Get("me", message.Id);
                         var email = await emailRequest.ExecuteAsync();
 
-                        // Obtener asunto, remitente y fecha
+                        
                         var headers = email.Payload.Headers;
                         string subject = headers.FirstOrDefault(h => h.Name == "Subject")?.Value ?? "Sin asunto";
                         string from = headers.FirstOrDefault(h => h.Name == "From")?.Value ?? "Desconocido";
@@ -77,27 +77,27 @@ namespace proyecto_multidisciplinar.view
                         string dateTime = "Fecha desconocida";
                         if (DateTime.TryParse(dateHeader, out DateTime date))
                         {
-                            dateTime = date.ToString("yyyy-MM-dd HH:mm"); // Fecha completa y hora
+                            dateTime = date.ToString("yyyy-MM-dd HH:mm"); 
                         }
 
                         emailList.Add(new EmailItem
                         {
                             MessageId = message.Id,
                             From = from,
-                            Hour = dateTime, // Ahora incluye fecha y hora
+                            Hour = dateTime,
                             Subject = subject,
                             IsRead = false
                         });
                     }
 
-                    // Hide loading gif and show ListView
+                    
                     emailListView.ItemsSource = emailList;
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    // No messages found
+                   
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
                     MessageBox.Show("No se encontraron correos.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -105,7 +105,7 @@ namespace proyecto_multidisciplinar.view
             }
             catch (Exception ex)
             {
-                // Ensure loading gif is hidden and ListView is visible in case of error
+            
                 loadingImage.Visibility = Visibility.Collapsed;
                 emailListView.Visibility = Visibility.Visible;
 
@@ -118,14 +118,14 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-                // Obtener el ID del mensaje del botón
+            
                 var button = sender as Button;
                 if (button == null) return;
 
                 string messageId = button.CommandParameter as string;
                 if (string.IsNullOrEmpty(messageId)) return;
 
-                // Confirmar eliminación
+             
                 var result = MessageBox.Show("¿Está seguro que desea eliminar este correo?",
                     "Confirmar Eliminación",
                     MessageBoxButton.YesNo,
@@ -133,10 +133,10 @@ namespace proyecto_multidisciplinar.view
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Eliminar el correo
+                  
                     await gmailService.Users.Messages.Delete("me", messageId).ExecuteAsync();
 
-                    // Recargar la lista de correos
+                
                     await CargarCorreosAsync();
                 }
             }
@@ -148,7 +148,7 @@ namespace proyecto_multidisciplinar.view
 
         private void EnviarCorreo_Click(object sender, RoutedEventArgs e)
         {
-            // Abrir ventana de envío de correo
+          
             EnviarCorreoWindow enviarCorreoWindow = new EnviarCorreoWindow(gmailService, this.username);
             enviarCorreoWindow.Show();
         }
@@ -167,23 +167,23 @@ namespace proyecto_multidisciplinar.view
         }
         private void EmailListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            // Get the selected email item
+       
             var selectedEmail = emailListView.SelectedItem as EmailItem;
             if (selectedEmail == null) return;
 
-            // Mark email as read
+         
             selectedEmail.IsRead = true;
             emailListView.Items.Refresh();
 
-            // Open email details window
+           
             var emailDetailsWindow = new EmailDetailsWindow(gmailService, selectedEmail.MessageId);
             emailDetailsWindow.Show();
 
-            // Find the button in the corresponding row and change its text
+           
             var itemContainer = emailListView.ItemContainerGenerator.ContainerFromItem(selectedEmail) as ListViewItem;
             if (itemContainer != null)
             {
-                // Find the Button specifically for "No Leído"
+              
                 var noLeidoButton = FindNoLeidoButtonInRow(itemContainer);
                 if (noLeidoButton != null)
                 {
@@ -192,10 +192,10 @@ namespace proyecto_multidisciplinar.view
             }
         }
 
-        // Helper method to find the "No Leído" button in the row
+     
         private Button FindNoLeidoButtonInRow(ListViewItem itemContainer)
         {
-            // Traverse the visual tree of the ListViewItem to find the Button with the x:Name "NoLeidoButton"
+          
             var stackPanel = FindVisualChild<StackPanel>(itemContainer);
             if (stackPanel != null)
             {
@@ -205,7 +205,7 @@ namespace proyecto_multidisciplinar.view
         }
 
 
-        // Helper method to find a visual child of a specific type
+     
         private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
 {
     for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
@@ -231,16 +231,16 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-                // Show loading gif and hide ListView
+            
                 Dispatcher.Invoke(() =>
                 {
                     emailListView.Visibility = Visibility.Collapsed;
                     loadingImage.Visibility = Visibility.Visible;
                 });
 
-                // Obtener lista de correos
+             
                 var request = gmailService.Users.Messages.List("me");
-                request.MaxResults = 50; // Limitar a 50 correos
+                request.MaxResults = 50;
                 var response = await request.ExecuteAsync();
 
                 var emailList = new List<EmailItem>();
@@ -252,7 +252,7 @@ namespace proyecto_multidisciplinar.view
                         var emailRequest = gmailService.Users.Messages.Get("me", message.Id);
                         var email = await emailRequest.ExecuteAsync();
 
-                        // Obtener asunto, remitente y fecha
+                       
                         var headers = email.Payload.Headers;
                         string subject = headers.FirstOrDefault(h => h.Name == "Subject")?.Value ?? "Sin asunto";
                         string from = headers.FirstOrDefault(h => h.Name == "From")?.Value ?? "Desconocido";
@@ -261,7 +261,7 @@ namespace proyecto_multidisciplinar.view
                         string dateTime = "Fecha desconocida";
                         if (DateTime.TryParse(dateHeader, out DateTime date))
                         {
-                            dateTime = date.ToString("yyyy-MM-dd HH:mm"); // Fecha completa y hora
+                            dateTime = date.ToString("yyyy-MM-dd HH:mm"); 
                         }
 
                         emailList.Add(new EmailItem
@@ -274,12 +274,12 @@ namespace proyecto_multidisciplinar.view
                     }
                 }
 
-                // Update UI on main thread
+                
                 Dispatcher.Invoke(() =>
                 {
                     emailListView.ItemsSource = emailList;
 
-                    // Hide loading gif and show ListView
+                
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
                 });
@@ -288,7 +288,7 @@ namespace proyecto_multidisciplinar.view
             {
                 Dispatcher.Invoke(() =>
                 {
-                    // Hide loading gif in case of error
+                  
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
 
@@ -301,17 +301,15 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-                // Revocar tokens de autorización
+              
                 await credential.RevokeTokenAsync(CancellationToken.None);
 
-                // Eliminar credenciales almacenadas
+             
                 string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".credentials/gmail-wpf-quickstart");
                 if (Directory.Exists(folderPath))
                 {
                     Directory.Delete(folderPath, true);
                 }
-
-                // Cerrar ventana actual
                 this.Close();
                 if (ventanaAnterior != null)
                 {
@@ -331,7 +329,7 @@ namespace proyecto_multidisciplinar.view
 
             var messageId = button.CommandParameter.ToString();
             MessageBox.Show($"Correo {messageId} marcado como no leído");
-            // Cambiar el texto del botón
+      
             if (button.Content.ToString() == "Leído")
             {
                 button.Content = "No Leído";

@@ -29,6 +29,7 @@ public partial class ViewFtpAdmin : Window
         usernameLabel.Content = "Logged user:" + " " + username;
         this.email = MainWindow.GetEmail(username);
     }
+    
     public void AccionArchivos(object sender, RoutedEventArgs e)
     {
         BotonesFunciones.Children.Clear();
@@ -97,7 +98,7 @@ public partial class ViewFtpAdmin : Window
     // Crear la etiqueta para el ComboBox de grupo
     Label grupoLabel = new Label
     {
-        Content = "Selecciona un Grupo",
+        Content = "Selecciona un Usuario/Grupo",
         Margin = new Thickness(10)
     };
 
@@ -341,16 +342,17 @@ public partial class ViewFtpAdmin : Window
     
     public void AccionSalida(object sender, RoutedEventArgs e)
     {
-        MainWindow mainWindow = new MainWindow();
+        PrincipalMenuAdmin menuadmin = new PrincipalMenuAdmin(username);
         this.Close();
-        mainWindow.Show();
+        menuadmin.Show();
     }
 
     private void AccionLogs(object sender, RoutedEventArgs e)
     {
-        BotonesFunciones.Children.Clear();
-        Funcion.Children.Clear();
-        
+        LogsView logsView = new LogsView(username);
+        logsView.Show();
+        this.Close();
+
     }
 
     /**
