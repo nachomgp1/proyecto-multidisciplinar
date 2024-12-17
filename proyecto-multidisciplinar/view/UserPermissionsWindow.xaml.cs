@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using System.Windows;
 using Npgsql;
 using proyecto_multidisciplinar.model;
@@ -21,10 +22,23 @@ namespace proyecto_multidisciplinar.view
             conexion = new Conexion();
             LoadData();
         }
+        private bool IsValidEmail(string email)
+        {
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            bool isValid = Regex.IsMatch(email, emailPattern);
+            return isValid;
+        }
         public void AddToWhitelist_Click(object sender, RoutedEventArgs e)
         {
             string whitelistEmail = WhitelistEmailTextBox.Text;
 
+            if (!IsValidEmail(whitelistEmail))
+            {
+                MessageBox.Show("Invalid email format. Please enter a valid email.");
+                Logs.InsertLogs(username, "Error Email Insert to Whitelist", DateTime.Now, MainWindow.GetLocalIpAdress(), MainWindow.GetEmail(username));
+
+                return;
+            }
             if (string.IsNullOrWhiteSpace(whitelistEmail))
             {
                 MessageBox.Show("Please, insert a valid email.");
