@@ -7,7 +7,7 @@
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
-        Title="User Login"
+        Title="User Login" Icon="../Images/logo.PNG"
         Height="520" Width="850" Background="White">
     <Grid Name="userSignIngGrid" RenderTransformOrigin="0.502,0.533">
         <!-- Header -->

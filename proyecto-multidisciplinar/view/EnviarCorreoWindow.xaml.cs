@@ -176,7 +176,7 @@ namespace proyecto_multidisciplinar.view
                             string.IsNullOrWhiteSpace(txtAsunto.Text) ||
                             string.IsNullOrWhiteSpace(txtMensaje.Text))
                         {
-                            MessageBox.Show("Por favor, complete todos los campos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("Please fill all the fields.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
 
