@@ -1,0 +1,157 @@
+﻿<Window x:Class="proyecto_multidisciplinar.UserSignInWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen"
+        Title="User Login" Icon="../Images/logo.PNG"
+        Height="520" Width="850" Background="White">
+    <Grid Name="userSignIngGrid" RenderTransformOrigin="0.502,0.533">
+        <!-- Header -->
+        <Label Content="User Sign-In" 
+               HorizontalAlignment="Center" 
+               VerticalAlignment="Top" 
+               Margin="0,10,0,0" 
+               FontSize="24" 
+               FontWeight="Bold" 
+               Foreground="Black" />
+
+        <!-- Left Image Section -->
+        <Image Source="pack://application:,,,/images/sol2.jpg" 
+               HorizontalAlignment="Left" 
+               Margin="0,0,0,0" 
+               VerticalAlignment="Stretch" 
+               Width="300" 
+               Stretch="UniformToFill" />
+
+        <!-- User Input Section -->
+        <Label Content="User" 
+               HorizontalAlignment="Left" 
+               Margin="328,57,0,0" 
+               Padding="0"
+               VerticalAlignment="Top" 
+               FontSize="14" 
+               Foreground="#4A4A4A" />
+        <TextBox x:Name="userTextBox" 
+                 HorizontalAlignment="Left" 
+                 Margin="328,82,0,0" 
+                 VerticalAlignment="Top" 
+                 Width="250" 
+                 Height="30" 
+                 Padding="5" 
+                 FontSize="14" 
+                 BorderBrush="#CCCCCC" 
+                 Background="#F9F9F9" />
+        <Label Content="Email" 
+    Padding="0"
+    HorizontalAlignment="Left" 
+    Margin="328,131,0,0" 
+    VerticalAlignment="Top" 
+    FontSize="14" 
+    Foreground="#4A4A4A" />
+        <TextBox x:Name="emailTextBox" 
+    HorizontalAlignment="Left" 
+    Margin="328,156,0,0" 
+    VerticalAlignment="Top" 
+    Width="250" 
+    Height="30" 
+    Padding="5" 
+    FontSize="14" 
+    BorderBrush="#CCCCCC" 
+    Background="#F9F9F9" />
+        <Label Content="Password" 
+               Padding="0"
+               HorizontalAlignment="Left" 
+               Margin="328,197,0,0" 
+               VerticalAlignment="Top" 
+               FontSize="14" 
+               Foreground="#4A4A4A" />
+        <PasswordBox x:Name="passwordTextBox" 
+                     HorizontalAlignment="Left" 
+                     Margin="328,0,0,0" 
+                     VerticalAlignment="Center" 
+                     Width="250" 
+                     Height="30" 
+                     Padding="5" 
+                     FontSize="14" 
+                     BorderBrush="#CCCCCC" 
+                     Background="#F9F9F9" />
+        <Separator Height="1" Margin="328,267,226,206" Background="#FFFFC14E"/>
+        <!-- Role Selection -->
+        <Label Content="Select Role" 
+               HorizontalAlignment="Left" 
+               Margin="332,283,0,0" 
+               Padding="0"
+               VerticalAlignment="Top" 
+               FontSize="14" 
+               FontWeight="Bold"
+               Foreground="#4A4A4A" />
+        <Border HorizontalAlignment="Left" 
+        VerticalAlignment="Top" 
+        Margin="328,307,0,0" 
+        Background="#FFFFE5B4" 
+        CornerRadius="10" 
+        BorderBrush="#CCCCCC" 
+        BorderThickness="1">
+            <StackPanel Orientation="Vertical" 
+                Margin="10">
+                <!-- Margin interno para espacio dentro del borde -->
+                <RadioButton Name="standardUser"
+                    Content="Standard User" 
+                     FontSize="14" 
+                     IsChecked="true"
+                     Foreground="#4A4A4A" 
+                     Margin="0,5,0,0"
+                     Checked="addGroups" 
+                             />
+                <RadioButton Name="groupUser"
+                    Content="Group User" 
+                     FontSize="14" 
+                     Foreground="#4A4A4A" 
+                     Margin="0,10,0,0"
+                     Checked="addGroups" 
+                             />
+                <RadioButton Name="administrator"
+                    Content="Administrator" 
+                     FontSize="14" 
+                     Foreground="#4A4A4A" 
+                     Margin="0,10,0,0"
+                     Checked="addGroups"         
+                             />
+            </StackPanel>
+        </Border>
+
+
+        <!-- Buttons Section -->
+        <Button x:Name="SignInButton" 
+                Content="Sign in" 
+                HorizontalAlignment="Left" 
+                Margin="523,389,0,0" 
+                VerticalAlignment="Top" 
+                Width="100" 
+                Height="35" 
+                Background="#FAD6A5" 
+                Foreground="Black" 
+                FontSize="14" 
+                FontWeight="Bold" 
+                BorderThickness="0" 
+                Click="SignIn"/>
+
+        <Button Content="Exit" 
+                HorizontalAlignment="Left" 
+                Margin="671,389,0,0" 
+                VerticalAlignment="Top" 
+                Width="100" 
+                Height="35" 
+                Background="#FAD6A5" 
+                Foreground="Black" 
+                FontSize="14" 
+                FontWeight="Bold" 
+                BorderThickness="0"
+                Click="Exit_Click"/>
+        
+    </Grid>
+</Window>

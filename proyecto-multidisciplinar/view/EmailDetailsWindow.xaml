@@ -2,7 +2,7 @@
     x:Class="proyecto_multidisciplinar.view.EmailDetailsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Email Details"
+    Title="Email Details" Icon="../Images/logo.PNG"
     Width="800"
     Height="600">
     <Window.Background>
