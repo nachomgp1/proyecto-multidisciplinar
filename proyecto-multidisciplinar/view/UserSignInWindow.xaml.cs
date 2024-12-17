@@ -19,7 +19,7 @@ namespace proyecto_multidisciplinar
         public static string email = null;
         public static string password = null;
         public static string userType = null;
-        public static string message_left = "50";
+        public static int? message_left = 50;
         private string? adminUser;
         Conexion conexion = new Conexion();
         Dictionary<string, int> groupDictionary = new Dictionary<string, int>(); 
@@ -55,87 +55,90 @@ namespace proyecto_multidisciplinar
 
         public void checkUserData(string user, string email, string password, string userType)
         {
-            if (conexion.AbrirConexion())
+            NpgsqlConnection connection = null;
+            try
             {
-                try
+                // Create a direct connection
+                connection = new NpgsqlConnection(conexion.ConnectionString);
+                connection.Open();
+
+                // Check if user or email already exists
+                using (var checkUserCommand = new NpgsqlCommand(
+                    "SELECT * FROM \"Users\" WHERE username = @username OR email = @email", connection))
                 {
-                   
-                    string query = "SELECT * FROM \"Users\" WHERE username = @username OR email = @email";
+                    checkUserCommand.Parameters.AddWithValue("@username", user);
+                    checkUserCommand.Parameters.AddWithValue("@email", email);
 
-                    NpgsqlParameter paramUser = new NpgsqlParameter("@username", user);
-                    NpgsqlParameter paramEmail = new NpgsqlParameter("@email", email);
-
-                    NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser, paramEmail);
-                    
-                    if (!reader.HasRows)
+                    using (var reader = checkUserCommand.ExecuteReader())
                     {
-                        reader.Close(); 
-
-                        string queryInsert;
-
-                        if (!userType.Equals("2")) 
+                        if (!reader.HasRows)
                         {
+                            reader.Close();
 
-                             queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
-                                     "VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
+                            // Prepare insert query based on user type
+                            string queryInsert;
+                            NpgsqlCommand insertCommand;
 
-                            NpgsqlParameter[] parameters = new NpgsqlParameter[] {
-                                 new NpgsqlParameter("@username", user),
-                                new NpgsqlParameter("@email", email),
-                                new NpgsqlParameter("@password", password),
-                                new NpgsqlParameter("@sentMessages",message_left),
-                                new NpgsqlParameter("@type", userType),
-                                };
-                            try
+                            if (userType != "2")
                             {
-                                MessageBox.Show($"username: {user}, email: {email}, password: {password}, sentMessages: {message_left}, type: {userType}, group: NULL");
-                                conexion.EjecutarNonQuery(queryInsert, parameters);
-                                MessageBox.Show("Datos insertados correctamente.");
+                               
+                                // Non-group user insertion
+                                queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
+                                              "VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
+
+                                insertCommand = new NpgsqlCommand(queryInsert, connection);
+                                insertCommand.Parameters.AddWithValue("@username", user);
+                                insertCommand.Parameters.AddWithValue("@email", email);
+                                insertCommand.Parameters.AddWithValue("@password", password);
+                                insertCommand.Parameters.AddWithValue("@sentMessages", message_left);
+                                insertCommand.Parameters.AddWithValue("@type", int.Parse(userType));
+
+                                try
+                                {
+                                    MessageBox.Show($"username: {user}, email: {email}, password: {password}, sentMessages: {message_left}, type: {userType}, group: NULL");
+                                    insertCommand.ExecuteNonQuery();
+                                    MessageBox.Show("Datos insertados correctamente.");
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"Error al insertar en la base de datos: {ex.Message}");
+                                    return;
+                                }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                MessageBox.Show($"Error al insertar en la base de datos: {ex.Message}");
+                                // Group user insertion
+                                queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
+                                              "VALUES (@username, @email, @password, @sentMessages, @group, @type);";
+
+                                insertCommand = new NpgsqlCommand(queryInsert, connection);
+                                insertCommand.Parameters.AddWithValue("@username", user);
+                                insertCommand.Parameters.AddWithValue("@email", email);
+                                insertCommand.Parameters.AddWithValue("@password", password);
+                                insertCommand.Parameters.AddWithValue("@sentMessages", message_left);
+                                insertCommand.Parameters.AddWithValue("@type", int.Parse(userType));
+                                insertCommand.Parameters.AddWithValue("@group", userGroup);
+
+                                insertCommand.ExecuteNonQuery();
                             }
+
+                            sendAcction("Successfully sign-in");
                         }
-                        else // if is type group
+                        else
                         {
-                            queryInsert = "INSERT INTO \"Users\" (username, email, password, message_left, group, type) " +
-                                          "VALUES (@username, @email, @password, @sentMessages, @group, @type);";
-                            NpgsqlParameter[] parameters = new NpgsqlParameter[] {
-                                 new NpgsqlParameter("@username", user),
-                                new NpgsqlParameter("@email", email),
-                                new NpgsqlParameter("@password", password),
-                                new NpgsqlParameter("@sentMessages", message_left),
-                                new NpgsqlParameter("@type", userType),
-                                new NpgsqlParameter("@group", userGroup)
-
-                            };
-                            conexion.EjecutarNonQuery(queryInsert, parameters);
-                            
+                            MessageBox.Show("The username or the email already exists");
+                            sendAcction("sign-in error");
                         }
-
-                        conexion.CerrarConexion();
-                        sendAcction("Successfully sign-in");
                     }
-                    else
-                    {
-                        MessageBox.Show("The username or the email already exists");
-                        reader.Close();
-                        conexion.CerrarConexion();
-                        sendAcction("sign-in error");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error during user creation: " + ex.Message);
-                    conexion.CerrarConexion();
-                   
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Could not connect to the database.");
-                
+                MessageBox.Show("Error during user creation: " + ex.Message);
+            }
+            finally
+            {
+                connection?.Close();
             }
         }
 
