@@ -97,7 +97,7 @@ public partial class ViewFtpAdmin : Window
     // Crear la etiqueta para el ComboBox de grupo
     Label grupoLabel = new Label
     {
-        Content = "Selecciona un Grupo",
+        Content = "Selecciona un Usuario/Grupo",
         Margin = new Thickness(10)
     };
 
