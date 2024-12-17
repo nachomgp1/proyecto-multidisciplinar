@@ -29,6 +29,7 @@ public partial class ViewFtpAdmin : Window
         usernameLabel.Content = "Logged user:" + " " + username;
         this.email = MainWindow.GetEmail(username);
     }
+    
     public void AccionArchivos(object sender, RoutedEventArgs e)
     {
         BotonesFunciones.Children.Clear();
@@ -348,9 +349,10 @@ public partial class ViewFtpAdmin : Window
 
     private void AccionLogs(object sender, RoutedEventArgs e)
     {
-        BotonesFunciones.Children.Clear();
-        Funcion.Children.Clear();
-        
+        LogsView logsView = new LogsView(username);
+        logsView.Show();
+        this.Close();
+
     }
 
     /**
