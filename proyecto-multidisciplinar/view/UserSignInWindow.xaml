@@ -53,15 +53,17 @@
     FontSize="14" 
     Foreground="#4A4A4A" />
         <TextBox x:Name="emailTextBox" 
-    HorizontalAlignment="Left" 
-    Margin="328,156,0,0" 
-    VerticalAlignment="Top" 
-    Width="250" 
-    Height="30" 
-    Padding="5" 
-    FontSize="14" 
-    BorderBrush="#CCCCCC" 
-    Background="#F9F9F9" />
+         HorizontalAlignment="Left" 
+         Margin="328,156,0,0" 
+         VerticalAlignment="Top" 
+         Width="250" 
+         Height="30" 
+         Padding="5" 
+         FontSize="14" 
+         BorderBrush="#CCCCCC" 
+         Background="#F9F9F9" 
+         TextChanged="EmailTextBox_TextChanged" />
+
         <Label Content="Password" 
                Padding="0"
                HorizontalAlignment="Left" 

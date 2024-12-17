@@ -8,6 +8,8 @@ using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using proyecto_multidisciplinar.view;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 namespace proyecto_multidisciplinar
 {
@@ -44,15 +46,41 @@ namespace proyecto_multidisciplinar
                         message_left = reader.GetInt32(0);
                     }
                 }
+                conexion.CerrarConexion();
             }
+
+        }
+        private bool IsValidEmail(string email)
+        {
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            bool isValid = Regex.IsMatch(email, emailPattern);
+            return isValid;
         }
 
-            private void SignIn(object sender, RoutedEventArgs e)
-        {
-             user = userTextBox.Text;
-             email = emailTextBox.Text;
-             password = passwordTextBox.Password;
-             userType = null;
+        private void SignIn(object sender, RoutedEventArgs e)
+            {
+            user = userTextBox?.Text;
+            password = passwordTextBox?.Password;
+            email = emailTextBox.Text;
+            if (!IsValidEmail(email))
+            {
+                MessageBox.Show("Invalid email format. Please enter a valid email.");
+                sendAcction("sign-in error");
+                return;
+            }
+
+           
+            
+
+            if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Username and Password cannot be empty.");
+                sendAcction("sign-in error");
+                return;
+            }
+
+          
+            
 
             if (radioButtonSelected.Equals("standardUser"))
             {
@@ -72,113 +100,78 @@ namespace proyecto_multidisciplinar
 
         public void checkUserData(string user, string email, string password, string userType)
         {
-            NpgsqlConnection connection = null;
+            Conexion conexion = new Conexion();
+
             try
+            {
+               
+                if (!conexion.AbrirConexion())
+                {
+                    MessageBox.Show("Error al abrir la conexión.");
+                    return;
+                }
+
+                string checkUserQuery = "SELECT * FROM \"Users\" WHERE username = @username OR email = @email;";
+                using (var reader = conexion.EjecutarConsulta(checkUserQuery,
+                            new NpgsqlParameter("@username", user),
+                            new NpgsqlParameter("@email", email)))
+                {
+                    if (reader.HasRows) 
+                    {
+                        MessageBox.Show("The username or the email already exists.");
+                        sendAcction("sign-in error");
+                        return; 
+                    }
+                    reader.Close(); 
+                }
+
+               
+                string insertUserQuery;
+                List<NpgsqlParameter> parametros = new List<NpgsqlParameter>
+        {
+            new NpgsqlParameter("@username", user),
+            new NpgsqlParameter("@email", email),
+            new NpgsqlParameter("@password", password),
+            new NpgsqlParameter("@sentMessages", message_left),
+            new NpgsqlParameter("@type", int.Parse(userType))
+        };
+
+                if (userType != "2") 
+                {
+                    insertUserQuery = @"INSERT INTO ""Users"" (username, email, password, messages_left, ""group"", type) 
+                                VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
+                }
+                else 
+                {
+                    insertUserQuery = @"INSERT INTO ""Users"" (username, email, password, messages_left, ""group"", type) 
+                                VALUES (@username, @email, @password, @sentMessages, @group, @type);";
+                    parametros.Add(new NpgsqlParameter("@group", userGroup));
+                }
+
+                conexion.EjecutarNonQuery(insertUserQuery, parametros.ToArray());
+                MessageBox.Show($"{user} was created successfully.");
+
+                
+                string whitelistQuery = @"INSERT INTO ""Whitelist"" (email) VALUES (@Email);";
+                conexion.EjecutarNonQuery(whitelistQuery, new NpgsqlParameter("@Email", email));
+                MessageBox.Show("Email added successfully to Whitelist.");
+
+                sendAcction("Successfully sign-in");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error during user creation: {ex.Message}");
+            }
+            finally
             {
                 
-                connection = new NpgsqlConnection(conexion.ConnectionString);
-                connection.Open();
-
-              
-                using (var checkUserCommand = new NpgsqlCommand(
-                    "SELECT * FROM \"Users\" WHERE username = @username OR email = @email", connection))
-                {
-                    checkUserCommand.Parameters.AddWithValue("@username", user);
-                    checkUserCommand.Parameters.AddWithValue("@email", email);
-
-                    using (var reader = checkUserCommand.ExecuteReader())
-                    {
-                        if (!reader.HasRows)
-                        {
-                            reader.Close();
-
-                            
-                            string queryInsert;
-                            NpgsqlCommand insertCommand;
-
-                            if (userType != "2")
-                            {
-                               
-                               
-                                queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
-                                              "VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
-
-                                insertCommand = new NpgsqlCommand(queryInsert, connection);
-                                insertCommand.Parameters.AddWithValue("@username", user);
-                                insertCommand.Parameters.AddWithValue("@email", email);
-                                insertCommand.Parameters.AddWithValue("@password", password);
-                                insertCommand.Parameters.AddWithValue("@sentMessages", message_left);
-                                insertCommand.Parameters.AddWithValue("@type", int.Parse(userType));
-
-                                try
-                                {
-                                    MessageBox.Show($"username: {user}, email: {email}, password: {password}, sentMessages: {message_left}, type: {userType}, group: NULL");
-                                    insertCommand.ExecuteNonQuery();
-                                    MessageBox.Show("Datos insertados correctamente.");
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show($"Error al insertar en la base de datos: {ex.Message}");
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                
-                                queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
-                                              "VALUES (@username, @email, @password, @sentMessages, @group, @type);";
-
-                                insertCommand = new NpgsqlCommand(queryInsert, connection);
-                                insertCommand.Parameters.AddWithValue("@username", user);
-                                insertCommand.Parameters.AddWithValue("@email", email);
-                                insertCommand.Parameters.AddWithValue("@password", password);
-                                insertCommand.Parameters.AddWithValue("@sentMessages", message_left);
-                                insertCommand.Parameters.AddWithValue("@type", int.Parse(userType));
-                                insertCommand.Parameters.AddWithValue("@group", userGroup);
-
-                                insertCommand.ExecuteNonQuery();
-                            }
-                            conexion.CerrarConexion();
-                            sendAcction("Successfully sign-in");
-                        }
-                        else
-                        {
-                            MessageBox.Show("The username or the email already exists");
-                            sendAcction("sign-in error");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error during user creation: " + ex.Message);
-            }
-            finally
-            {
-                connection?.Close();
-            }
-            try
-            {
-                if (conexion.AbrirConexion()) 
-                {
-                    
-                    string queryWhiteList = @"INSERT INTO ""Whitelist"" (email) VALUES (@Email);";
-                    conexion.EjecutarNonQuery(queryWhiteList,
-                        new NpgsqlParameter("@Email", email));
-
-                    MessageBox.Show("Email added successfully to Whitelist.");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error during user creation: " + ex.Message);
-            }
-            finally
-            {
-                connection?.Close();
+                conexion.CerrarConexion();
+                PrincipalMenuAdmin viewAdmid = new PrincipalMenuAdmin(adminUser);
+                this.Close();
+                viewAdmid.Show();
             }
         }
+
 
         private void sendAcction(string action)
         {
@@ -268,7 +261,19 @@ namespace proyecto_multidisciplinar
                 userSignIngGrid.Children.Add(groups);
             }
         }
-
+        private void EmailTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(emailTextBox.Text, emailPattern))
+            {
+                emailTextBox.BorderBrush = new SolidColorBrush(Colors.Red); 
+            }
+            else
+            {
+                emailTextBox.BorderBrush = new SolidColorBrush(Colors.Green); 
+            }
+        }
         private void Groups_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
