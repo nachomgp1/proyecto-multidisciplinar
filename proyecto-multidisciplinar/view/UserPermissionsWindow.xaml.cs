@@ -21,6 +21,43 @@ namespace proyecto_multidisciplinar.view
             conexion = new Conexion();
             LoadData();
         }
+        public void AddToWhitelist_Click(object sender, RoutedEventArgs e)
+        {
+            string whitelistEmail = WhitelistEmailTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(whitelistEmail))
+            {
+                MessageBox.Show("Please, insert a valid email.");
+                return;
+            }
+
+            try
+            {
+                if (conexion.AbrirConexion())
+                {
+                  
+                    string updateQuery = @"
+                UPDATE ""Whitelist""
+                SET email = @Email
+                WHERE id = 1;"; 
+
+                    conexion.EjecutarNonQuery(updateQuery,
+                        new NpgsqlParameter("@Email", whitelistEmail));
+
+                    MessageBox.Show("WhishList updated.");
+                    WhitelistEmailTextBox.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+            finally
+            {
+                conexion.CerrarConexion();
+            }
+        }
+
         public void Exit_Click(object sernder, RoutedEventArgs e)
         {
             PrincipalMenuAdmin viewAdmid = new PrincipalMenuAdmin(username);
