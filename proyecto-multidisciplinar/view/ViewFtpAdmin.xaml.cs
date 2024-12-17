@@ -341,9 +341,9 @@ public partial class ViewFtpAdmin : Window
     
     public void AccionSalida(object sender, RoutedEventArgs e)
     {
-        MainWindow mainWindow = new MainWindow();
+        PrincipalMenuAdmin menuadmin = new PrincipalMenuAdmin(username);
         this.Close();
-        mainWindow.Show();
+        menuadmin.Show();
     }
 
     private void AccionLogs(object sender, RoutedEventArgs e)

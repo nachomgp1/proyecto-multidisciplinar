@@ -19,9 +19,9 @@ public partial class ViewFtpUser : Window
 
     private string username;
 
-    private string FtpUrl = "ftp://185.27.134.11";
-    private string FtpUser = "if0_37886491";
-    private string FtpPass = "Sanjose2425";
+    private string FtpUrl = "ftp://127.0.0.1";
+    private string FtpUser = "Proyecto";
+    private string FtpPass = "";
     private string userDirectory;
 
     public ViewFtpUser(string username)
@@ -92,9 +92,9 @@ public partial class ViewFtpUser : Window
 
     public void AccionSalida(object sender, RoutedEventArgs e)
     {
-        MainWindow mainWindow = new MainWindow();
+        PrincipalMenuStandardUser menuusr = new PrincipalMenuStandardUser(username);
         this.Close();
-        mainWindow.Show();
+        menuusr.Show();
     }
     
     /**

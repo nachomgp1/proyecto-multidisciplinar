@@ -44,12 +44,6 @@ namespace proyecto_multidisciplinar.view
                 viewPrincipalMenuUser.Show();
                 
             }
-            else if (typeUser == 2)
-            {
-                view.PrincipalMenuGroupUser viewPrincipalGroupUser = new view.PrincipalMenuGroupUser(username);
-                viewPrincipalGroupUser.Show();
-               
-            }
             this.Close();
         }
 
