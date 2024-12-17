@@ -11,14 +11,16 @@ namespace proyecto_multidisciplinar.model
         public class Conexion
         {
             private NpgsqlConnection connection;
-
-            public Conexion()
+            public string ConnectionString { get; private set; }
+        public Conexion()
             {
             string connectionString = "Host=ep-solitary-hall-a2pwd4fg.eu-central-1.aws.neon.tech;" +
                           "Database=ProyectoMulti;" +
                           "Username=ProyectoMulti_owner;" +
                           "Password=Xmn5zOt1AZES;" +
                           "SSL Mode=Require;";
+            this.ConnectionString = connectionString;
+
             connection = new NpgsqlConnection(connectionString);
             }
         public int EjecutarNonQuery(string query)
