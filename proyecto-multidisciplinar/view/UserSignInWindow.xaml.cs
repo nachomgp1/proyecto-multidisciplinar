@@ -147,25 +147,13 @@ namespace proyecto_multidisciplinar
                 DateTime currentDate = DateTime.Now;
 
                 //get ip
-                string userIp = GetLocalIPAddress();
-
+                string userIp = MainWindow.GetLocalIpAdress();
+                String email = MainWindow.GetEmail(adminUser);
                 conexion.AbrirConexion();
 
+                Logs.InsertLogs(adminUser, action, currentDate, userIp, email);
                
-                string queryInsert = "INSERT INTO \"Logs\" (username, action, date, user_ip) " +
-                                     "VALUES (@username, @action, @date, @user_ip)";
-
-                
-                NpgsqlParameter[] parameters = new NpgsqlParameter[] {
-            new NpgsqlParameter("@username", adminUser),
-            new NpgsqlParameter("@action", action),
-            new NpgsqlParameter("@date", currentDate),
-            new NpgsqlParameter("@user_ip", userIp)
-        };
-
-                
-                conexion.EjecutarNonQuery(queryInsert, parameters);
-                conexion.CerrarConexion();
+        
             }
             catch (Exception ex)
             {
@@ -251,18 +239,6 @@ namespace proyecto_multidisciplinar
                     userGroup = groupDictionary[selectedGroupName]; 
                 }
             }
-        }
-        string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            return "127.0.0.1"; 
         }
     }
 }
