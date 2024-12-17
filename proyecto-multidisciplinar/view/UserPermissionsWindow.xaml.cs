@@ -45,6 +45,8 @@ namespace proyecto_multidisciplinar.view
 
                     MessageBox.Show("Email successfully added to Whitelist.");
                     WhitelistEmailTextBox.Clear();
+                    Logs.InsertLogs(username, "Succesfull Email Insert to Whitelist", DateTime.Now, MainWindow.GetLocalIpAdress(), MainWindow.GetEmail(username));
+
                 }
             }
             catch (Exception ex)
@@ -197,7 +199,7 @@ namespace proyecto_multidisciplinar.view
                             updateUserCommand.ExecuteNonQuery();
                         }
                     }
-                    Logs.InsertLogs(username,"Saved User Permissions",);
+                    Logs.InsertLogs(username, "Saved User Permissions Changes", DateTime.Now, MainWindow.GetLocalIpAdress(), MainWindow.GetEmail(username));
                 }
 
                 MessageBox.Show("Changes saved successfully.");
@@ -205,6 +207,8 @@ namespace proyecto_multidisciplinar.view
             catch (Exception ex)
             {
                 MessageBox.Show($"Error saving changes: {ex.Message}");
+                Logs.InsertLogs(username, "Failed User Permissions Changes", DateTime.Now, MainWindow.GetLocalIpAdress(), MainWindow.GetEmail(username));
+
             }
             finally
             {
