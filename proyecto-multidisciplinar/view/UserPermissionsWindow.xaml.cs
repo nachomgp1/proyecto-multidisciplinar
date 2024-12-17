@@ -35,16 +35,15 @@ namespace proyecto_multidisciplinar.view
             {
                 if (conexion.AbrirConexion())
                 {
-                  
-                    string updateQuery = @"
-                UPDATE ""Whitelist""
-                SET email = @Email
-                WHERE id = 1;"; 
+                   
+                    string insertQuery = @"
+                INSERT INTO ""Whitelist"" (email)
+                VALUES (@Email);";
 
-                    conexion.EjecutarNonQuery(updateQuery,
+                    conexion.EjecutarNonQuery(insertQuery,
                         new NpgsqlParameter("@Email", whitelistEmail));
 
-                    MessageBox.Show("WhishList updated.");
+                    MessageBox.Show("Email successfully added to Whitelist.");
                     WhitelistEmailTextBox.Clear();
                 }
             }
@@ -57,6 +56,7 @@ namespace proyecto_multidisciplinar.view
                 conexion.CerrarConexion();
             }
         }
+
 
         public void Exit_Click(object sernder, RoutedEventArgs e)
         {
