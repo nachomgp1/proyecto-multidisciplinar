@@ -19,7 +19,7 @@ namespace proyecto_multidisciplinar
         public static string email = null;
         public static string password = null;
         public static string userType = null;
-        public static int? message_left = 50;
+        public static int? message_left = 0;
         private string? adminUser;
         Conexion conexion = new Conexion();
         Dictionary<string, int> groupDictionary = new Dictionary<string, int>(); 
@@ -28,9 +28,26 @@ namespace proyecto_multidisciplinar
         {
             this.adminUser = adminUser;
             InitializeComponent();
+            inicializateMessage_leftValue();
         }
 
-        private void SignIn(object sender, RoutedEventArgs e)
+        private void inicializateMessage_leftValue()
+        {
+            if (conexion.AbrirConexion())
+            {
+
+                string userQuery = "SELECT messages_left FROM \"Users\" WHERE username = 'User'";
+                using (var reader = conexion.EjecutarConsulta(userQuery))
+                {
+                    if (reader.Read())
+                    {
+                        message_left = reader.GetInt32(0);
+                    }
+                }
+            }
+        }
+
+            private void SignIn(object sender, RoutedEventArgs e)
         {
              user = userTextBox.Text;
              email = emailTextBox.Text;
@@ -58,11 +75,11 @@ namespace proyecto_multidisciplinar
             NpgsqlConnection connection = null;
             try
             {
-                // Create a direct connection
+                
                 connection = new NpgsqlConnection(conexion.ConnectionString);
                 connection.Open();
 
-                // Check if user or email already exists
+              
                 using (var checkUserCommand = new NpgsqlCommand(
                     "SELECT * FROM \"Users\" WHERE username = @username OR email = @email", connection))
                 {
@@ -75,14 +92,14 @@ namespace proyecto_multidisciplinar
                         {
                             reader.Close();
 
-                            // Prepare insert query based on user type
+                            
                             string queryInsert;
                             NpgsqlCommand insertCommand;
 
                             if (userType != "2")
                             {
                                
-                                // Non-group user insertion
+                               
                                 queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
                                               "VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
 
@@ -107,7 +124,7 @@ namespace proyecto_multidisciplinar
                             }
                             else
                             {
-                                // Group user insertion
+                                
                                 queryInsert = "INSERT INTO \"Users\" (username, email, password, messages_left, \"group\", type) " +
                                               "VALUES (@username, @email, @password, @sentMessages, @group, @type);";
 
@@ -121,7 +138,7 @@ namespace proyecto_multidisciplinar
 
                                 insertCommand.ExecuteNonQuery();
                             }
-
+                            conexion.CerrarConexion();
                             sendAcction("Successfully sign-in");
                         }
                         else
@@ -131,6 +148,27 @@ namespace proyecto_multidisciplinar
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error during user creation: " + ex.Message);
+            }
+            finally
+            {
+                connection?.Close();
+            }
+            try
+            {
+                if (conexion.AbrirConexion()) 
+                {
+                    
+                    string queryWhiteList = @"INSERT INTO ""Whitelist"" (email) VALUES (@Email);";
+                    conexion.EjecutarNonQuery(queryWhiteList,
+                        new NpgsqlParameter("@Email", email));
+
+                    MessageBox.Show("Email added successfully to Whitelist.");
+                }
+
             }
             catch (Exception ex)
             {
