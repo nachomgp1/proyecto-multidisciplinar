@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using proyecto_multidisciplinar.view;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using static System.Net.WebRequestMethods;
 
 namespace proyecto_multidisciplinar
 {
@@ -24,13 +25,14 @@ namespace proyecto_multidisciplinar
         public static int? message_left = 0;
         private string? adminUser;
         Conexion conexion = new Conexion();
-        Dictionary<string, int> groupDictionary = new Dictionary<string, int>(); 
-        
+        Dictionary<string, int> groupDictionary = new Dictionary<string, int>();
+        ViewFtpAdmin viewFtpAdmin;
         public UserSignInWindow(string? adminUser)
         {
             this.adminUser = adminUser;
             InitializeComponent();
             inicializateMessage_leftValue();
+            viewFtpAdmin = new ViewFtpAdmin(adminUser);
         }
 
         private void inicializateMessage_leftValue()
@@ -152,7 +154,9 @@ namespace proyecto_multidisciplinar
                 conexion.EjecutarNonQuery(insertUserQuery, parametros.ToArray());
                 MessageBox.Show($"{user} was created successfully.");
 
-                
+                viewFtpAdmin.createDirectory("/", user);
+
+
                 string whitelistQuery = @"INSERT INTO ""Whitelist"" (email) VALUES (@Email);";
                 conexion.EjecutarNonQuery(whitelistQuery, new NpgsqlParameter("@Email", email));
                 

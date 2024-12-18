@@ -26,10 +26,12 @@ namespace proyecto_multidisciplinar
     {
         Conexion conexion = new Conexion();
         private string? adminUser;
+        ViewFtpAdmin viewFtpAdmin;
         public GroupsCreatorWindow(string? adminUser)
         {
             InitializeComponent();
             this.adminUser = adminUser;
+            viewFtpAdmin = new ViewFtpAdmin(adminUser);
         }
         public void Exit_Click(object sernder, RoutedEventArgs e)
         {
@@ -55,10 +57,10 @@ namespace proyecto_multidisciplinar
                
                 string query = "INSERT INTO \"Groups\" (name) VALUES (@name)";
 
-                NpgsqlParameter nameParameter = new NpgsqlParameter("@name", NpgsqlTypes.NpgsqlDbType.Varchar)
-                {
-                    Value = groupName
-                };
+                viewFtpAdmin.createDirectory("/", groupName);
+
+                NpgsqlParameter nameParameter = new NpgsqlParameter("@name", groupName);
+                
 
                
                 conexion.EjecutarNonQuery(query, nameParameter);
@@ -76,7 +78,7 @@ namespace proyecto_multidisciplinar
                 MessageBox.Show("No se pudo establecer una conexión con la base de datos.");
             }
         }
-        //CAMBIAR ESTO A EL QUE ESTA SITUADO EN EL MAINWINDOWS
+        
         string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());

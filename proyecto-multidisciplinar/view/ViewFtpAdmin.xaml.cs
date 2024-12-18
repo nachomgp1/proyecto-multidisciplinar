@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Npgsql;
 using proyecto_multidisciplinar.model;
+using static System.Net.WebRequestMethods;
 
 namespace proyecto_multidisciplinar.view;
 
@@ -18,9 +19,10 @@ public partial class ViewFtpAdmin : Window
     private List<Button> botones =new List<Button>();
     private List<Button> botonesDirectorio = new List<Button>();
 
-    private string FtpUrl = "ftp://185.27.134.11";
-    private string FtpUser = "if0_37886491";
-    private string FtpPass = "Sanjose2425";
+    private string FtpUrl { get; } = "ftp://185.27.134.11";
+    private string FtpUser { get; } = "if0_37886491";
+    private string FtpPass { get; } = "Sanjose2425";
+    
 
     public ViewFtpAdmin(string username)
     {
@@ -431,7 +433,7 @@ public partial class ViewFtpAdmin : Window
         string selectedDirectory = directoriosComboBox.SelectedItem?.ToString();
         string localFilePath = archivoSeleccionado.Text;
 
-        if (!string.IsNullOrEmpty(selectedDirectory) && File.Exists(localFilePath))
+        if (!string.IsNullOrEmpty(selectedDirectory) && System.IO.File.Exists(localFilePath))
         {
             try
             {
@@ -1023,7 +1025,18 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
     /**
      * Funcion para crear los botones de Directorio
      */
-    
+    public void createDirectory(string rutaSeleccionada, string nuevaCarpeta)
+    {
+        var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+        string nuevaRuta = Path.Combine(rutaSeleccionada, nuevaCarpeta);
+        ftp.CreateDirectory(nuevaRuta);
+    }
+    public void deleteDirectory(string rutaSeleccionada, string carpetaSeleccionada)
+    {
+        var ftp = new ControlFtp(FtpUrl, FtpUser, FtpPass);
+        string carpetaCompleta = Path.Combine(rutaSeleccionada, carpetaSeleccionada);
+        ftp.DeleteDirectory(carpetaCompleta);
+    }
     private void crearBotonesDirectorio()
     {
         botonesDirectorio.Add(new Button()
