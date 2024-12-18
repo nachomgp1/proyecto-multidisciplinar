@@ -67,16 +67,42 @@ namespace proyecto_multidisciplinar
         private static bool ValidateUser(string username, string password)
         {
             Conexion conexion = new Conexion();
-            if (conexion.AbrirConexion())
+            //if (conexion.AbrirConexion())
+            //{
+            //    string query = "SELECT COUNT(*) FROM \"Users\" where username = @username AND password = @password";
+
+            //    NpgsqlParameter paramUser = new NpgsqlParameter("@username", username);
+            //    NpgsqlParameter paramPassword = new NpgsqlParameter("@password", password);
+
+            //    NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser, paramPassword);
+
+            //    if (reader.Read() && reader.GetInt32(0) > 0)
+            //    {
+            //        MessageBox.Show("Successful log in");
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Invalid username or password");
+            //        return false;
+            //    }
+
+            //    reader.Close();
+            //    conexion.CerrarConexion();
+
+            //}
+            //the validation with hashed passwords
+            if(conexion.AbrirConexion())
             {
-                string query = "SELECT COUNT(*) FROM \"Users\" where username = @username AND password = @password";
-
+                string query = "SELECT username, password FROM \"Users\" where username = @username";
                 NpgsqlParameter paramUser = new NpgsqlParameter("@username", username);
-                NpgsqlParameter paramPassword = new NpgsqlParameter("@password", password);
+                NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser);
+                string? passwordHashed="";
+                while (reader.Read())
+                {
+                     passwordHashed = reader.GetString(1);
 
-                NpgsqlDataReader reader = conexion.EjecutarConsulta(query, paramUser, paramPassword);
-
-                if (reader.Read() && reader.GetInt32(0) > 0)
+                }
+                if(EncriptedPassword.VerifyPassword(password, passwordHashed))
                 {
                     MessageBox.Show("Successful log in");
                 }
@@ -85,10 +111,6 @@ namespace proyecto_multidisciplinar
                     MessageBox.Show("Invalid username or password");
                     return false;
                 }
-
-                reader.Close();
-                conexion.CerrarConexion();
-
             }
 
 

@@ -61,6 +61,7 @@ namespace proyecto_multidisciplinar
             {
             user = userTextBox?.Text;
             password = passwordTextBox?.Password;
+            string hashPassword = EncriptedPassword.HashPassword(password);
             email = emailTextBox.Text;
             if (!IsValidEmail(email))
             {
@@ -95,7 +96,7 @@ namespace proyecto_multidisciplinar
                 userType = "3";
             }
 
-           checkUserData(user, email, password, userType);
+           checkUserData(user, email, hashPassword, userType);
         }
 
         public void checkUserData(string user, string email, string password, string userType)
@@ -138,12 +139,12 @@ namespace proyecto_multidisciplinar
 
                 if (userType != "2") 
                 {
-                    insertUserQuery = @"INSERT INTO ""Users"" (username, email, password, messages_left, ""group"", type) 
+                    insertUserQuery = @"INSERT INTO ""Users"" (username, email, ""password"", messages_left, ""group"", type) 
                                 VALUES (@username, @email, @password, @sentMessages, NULL, @type);";
                 }
                 else 
                 {
-                    insertUserQuery = @"INSERT INTO ""Users"" (username, email, password, messages_left, ""group"", type) 
+                    insertUserQuery = @"INSERT INTO ""Users"" (username, email, ""password"", messages_left, ""group"", type) 
                                 VALUES (@username, @email, @password, @sentMessages, @group, @type);";
                     parametros.Add(new NpgsqlParameter("@group", userGroup));
                 }
@@ -154,7 +155,7 @@ namespace proyecto_multidisciplinar
                 
                 string whitelistQuery = @"INSERT INTO ""Whitelist"" (email) VALUES (@Email);";
                 conexion.EjecutarNonQuery(whitelistQuery, new NpgsqlParameter("@Email", email));
-                MessageBox.Show("Email added successfully to Whitelist.");
+                
 
                 sendAcction("Successfully sign-in");
             }

@@ -79,7 +79,21 @@ namespace proyecto_multidisciplinar.view
 
                 if (result == MessageBoxResult.Yes)
                 {
-                  
+                    string selectEmail = "SELECT email FROM \"Users\" WHERE id = @id";
+                    conexion.AbrirConexion();
+                    NpgsqlDataReader reader = conexion.EjecutarConsulta(selectEmail, new NpgsqlParameter("@id", userId));
+                    string email="";
+                    while(reader.Read())
+                    {
+                        email = reader.GetString(0);
+                    }
+                    conexion.CerrarConexion();
+
+                    string deleteFromWhitelist = "DELETE FROM \"Whitelist\" WHERE email = @email";
+                    conexion.AbrirConexion();
+                    conexion.EjecutarNonQuery(deleteFromWhitelist, new NpgsqlParameter("@email", email));
+                    conexion.CerrarConexion();
+
                     string deleteQuery = "DELETE FROM \"Users\" WHERE id = @id";
                     conexion.AbrirConexion();
                     conexion.EjecutarNonQuery(deleteQuery, new NpgsqlParameter("@id", userId));
