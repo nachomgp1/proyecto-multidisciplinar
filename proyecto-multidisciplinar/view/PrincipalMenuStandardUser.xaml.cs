@@ -45,7 +45,10 @@ namespace proyecto_multidisciplinar.view
 
         private void Button_Click_Email(object sender, RoutedEventArgs e)
         {
+            MainWindowMail mailWindow = new MainWindowMail(username);
+            this.Close();
 
+            mailWindow.Show();
         }
 
         
