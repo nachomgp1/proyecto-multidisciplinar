@@ -6,15 +6,15 @@
         mc:Ignorable="d" Icon="../Images/logo.PNG"
         Title="Groups Creator" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
-        <!-- Background image -->
+       
         <Image Source="pack://application:,,,/images/solHorizontal.jpg"
                Stretch="UniformToFill"
                
                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
-        <!-- Main content -->
+       
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-            <!-- Title Label -->
+           
             <Label Content="Create Group" 
                    FontSize="36" 
                    FontWeight="Bold"
@@ -22,7 +22,7 @@
                    HorizontalAlignment="Center"
                    Margin="0,0,0,20"/>
 
-            <!-- TextBox with blurred background -->
+            
             <Border CornerRadius="10" Background="#FF684310" Padding="2" Margin="0,0,0,20">
                 <TextBox Height="40" FontSize="16" Margin="5" 
                          VerticalContentAlignment="Center"
@@ -31,7 +31,7 @@
                          Foreground="#34495E"/>
             </Border>
 
-            <!-- Action Button -->
+            
             <Button Content="Create Group" 
                     HorizontalAlignment="Right" 
   

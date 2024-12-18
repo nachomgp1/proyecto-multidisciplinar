@@ -2,19 +2,20 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Icon="../Images/logo.PNG"
+        WindowStartupLocation="CenterScreen"
         Title="User Permissions" Height="450" Width="800">
-    <!-- Fondo degradado -->
+   
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#FFB074" Offset="0.0"/>
-            <!-- Tono naranja claro -->
+            
             <GradientStop Color="#FFFFE7D8" Offset="1.0"/>
-            <!-- Tono naranja oscuro -->
+            
         </LinearGradientBrush>
     </Window.Background>
 
     <Grid>
-        <!-- Section for Message Limit -->
+        
         <Button Content="EXIT"
         Width="120" 
         Height="30" 
@@ -42,7 +43,7 @@
                  BorderBrush="#D9896B"
                  Foreground="Black"/>
 
-        <!-- DataGrid con estilos personalizados -->
+        
         <DataGrid x:Name="TypesDataGrid"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
@@ -61,7 +62,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- Save Changes Button -->
+        
         <Button Content="Save Changes"
                 Width="120" 
                 Height="30" 
@@ -77,14 +78,14 @@
                     VerticalAlignment="Bottom"
                     Margin="0,0,0,20"
                     Background="{x:Null}">
-            <!-- Label -->
+            
             <TextBlock Text="Add to WhiteList: "
                        FontSize="16"
                        FontWeight="Bold"
                        Foreground="#2C3E50"
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
-            <!-- TextBox -->
+            
             <TextBox x:Name="WhitelistEmailTextBox" 
                      Width="200" 
                      Height="25"
@@ -92,7 +93,7 @@
                      BorderBrush="#D9896B"
                      Foreground="Black"
                      Margin="0,0,10,0"/>
-            <!-- Add Button -->
+            
             <Button Content="Add"
                     Width="100" 
                     Height="30" 

@@ -197,7 +197,7 @@ namespace proyecto_multidisciplinar
         }
         public void Exit_Click(object sernder, RoutedEventArgs e)
         {
-            PrincipalMenuAdmin viewAdmid = new PrincipalMenuAdmin(adminUser);
+            UserManagementOptions viewAdmid = new UserManagementOptions(adminUser);
             this.Close();
             viewAdmid.Show();
         }

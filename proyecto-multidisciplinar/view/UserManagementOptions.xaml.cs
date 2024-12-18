@@ -52,5 +52,12 @@ namespace proyecto_multidisciplinar.view
             this.Close();
             groupsCreatorWindow.Show();
         }
+
+        public void deleteUser_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteUserWindow deleteUserWindow = new DeleteUserWindow(username);
+            this.Close();
+            deleteUserWindow.Show();
+        }
     }
 }

@@ -10,7 +10,7 @@
         Title="User Login" Icon="../Images/logo.PNG"
         Height="520" Width="850" Background="White">
     <Grid Name="userSignIngGrid" RenderTransformOrigin="0.502,0.533">
-        <!-- Header -->
+        
         <Label Content="User Sign-In" 
                HorizontalAlignment="Center" 
                VerticalAlignment="Top" 
@@ -19,7 +19,7 @@
                FontWeight="Bold" 
                Foreground="Black" />
 
-        <!-- Left Image Section -->
+       
         <Image Source="pack://application:,,,/images/sol2.jpg" 
                HorizontalAlignment="Left" 
                Margin="0,0,0,0" 
@@ -27,7 +27,7 @@
                Width="300" 
                Stretch="UniformToFill" />
 
-        <!-- User Input Section -->
+       
         <Label Content="User" 
                HorizontalAlignment="Left" 
                Margin="328,57,0,0" 
@@ -126,8 +126,6 @@
             </StackPanel>
         </Border>
 
-
-        <!-- Buttons Section -->
         <Button x:Name="SignInButton" 
                 Content="Sign in" 
                 HorizontalAlignment="Left" 

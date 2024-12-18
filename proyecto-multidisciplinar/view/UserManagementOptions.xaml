@@ -5,17 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:proyecto_multidisciplinar.view"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Icon="../Images/logo.PNG"
         Title="UserManagementOptions" Height="450" Width="800">
     <Grid>
-        <!-- Background Image -->
+        
         <Image Source="pack://application:,,,/images/solHorizontal.jpg"
                Stretch="UniformToFill"
                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
-        <!-- Main Content -->
+       
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="350">
-            <!-- Title Label -->
+            
             <Label Content="User Options" 
                    FontSize="36" 
                    FontWeight="Bold"
@@ -23,7 +24,7 @@
                    HorizontalAlignment="Center"
                    Margin="0,0,0,20"/>
 
-            <!-- User Permissions Button -->
+            
             <Button Content="User Permissions" 
                     Width="200" 
                     Height="50" 
@@ -35,7 +36,7 @@
                     BorderThickness="0"
                    Click="UserPermissions_Click"/>
 
-            <!-- User Creator Button -->
+            
             <Button Content="User Creator" 
                     Width="200" 
                     Height="50" 
@@ -56,7 +57,17 @@
                     FontWeight="Bold" 
                     BorderThickness="0"
                     Click="CreateGroup_Click"/>
-            <!-- Exit Button -->
+            <Button Content="Delete User" 
+        Width="200" 
+        Height="50" 
+        Margin="0,0,0,20"
+        Background="#FAD6A5" 
+        Foreground="Black" 
+        FontSize="16" 
+        FontWeight="Bold" 
+        BorderThickness="0"
+        Click="deleteUser_Click"/>
+           
             <Button Content="Exit" 
                     Width="100" 
                     Height="35" 
