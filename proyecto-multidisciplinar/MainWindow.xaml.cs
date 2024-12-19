@@ -102,7 +102,12 @@ namespace proyecto_multidisciplinar
                      passwordHashed = reader.GetString(1);
 
                 }
-                if(EncriptedPassword.VerifyPassword(password, passwordHashed))
+                if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                {
+                    MessageBox.Show("Invalid username or password");
+                    return false;
+                }
+                else if(EncriptedPassword.VerifyPassword(password, passwordHashed))
                 {
                     MessageBox.Show("Successful log in");
                 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace proyecto_multidisciplinar.model
 {
@@ -32,26 +33,33 @@ namespace proyecto_multidisciplinar.model
         public static bool VerifyPassword(string password, string storedHash)
         {
             //convert the hash from base64 to bytes
-            
-            byte[] hashBytes = Convert.FromBase64String(storedHash);
-
-            // extrat the hash
-            byte[] salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-
-            //generate a hash from the password using the original salt
-            
-            using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256))
+            try
             {
-                byte[] hash = pbkdf2.GetBytes(32);
+                byte[] hashBytes = Convert.FromBase64String(storedHash);
 
-                for (int i = 0; i < 32; i++)
+                // extrat the hash
+                byte[] salt = new byte[16];
+                Array.Copy(hashBytes, 0, salt, 0, 16);
+
+                //generate a hash from the password using the original salt
+
+                using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256))
                 {
-                    if (hashBytes[i + 16] != hash[i])
+                    byte[] hash = pbkdf2.GetBytes(32);
+
+                    for (int i = 0; i < 32; i++)
                     {
-                        return false; // if there is a diference, the password is incorrect
+                        if (hashBytes[i + 16] != hash[i])
+                        {
+                            return false; // if there is a diference, the password is incorrect
+                        }
                     }
                 }
+            }
+            catch(Exception e)
+            {
+                //if throws an exceptions is because it doesnt read enough bytes or has an unvalid format, so that means that isnt correct
+                return false;
             }
             return true; // if the hashes are equals, is correct
         }
