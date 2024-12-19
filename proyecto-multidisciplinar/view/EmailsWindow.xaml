@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="My Mail" Icon="../Images/logo.PNG"
     Width="850"
-    Height="400">
+    Height="550">
     <Window.Background>
         <LinearGradientBrush>
             <GradientStop Offset="0" Color="#ffcc87" />
@@ -21,9 +21,8 @@
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <!--  Espacio para la lista de correos  -->
                 <RowDefinition Height="Auto" />
-                <!--  Fila para botones  -->
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
 
@@ -82,14 +81,54 @@
                     
                 </ListView>
             </ScrollViewer>
-
-            <!--  Botones de control  -->
             <StackPanel
                 Grid.Row="1"
                 Margin="0,10,0,10"
                 HorizontalAlignment="Center"
                 Orientation="Horizontal">
                 <Button
+                    x:Name="previousButton"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Background="#fee2bc"
+                    Click="PreviousPage_Click">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Previous" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="nextButton"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Background="#fee2bc"
+                    Click="NextPage_Click">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Next" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <!--  Botones de control  -->
+            <StackPanel
+                Grid.Row="2"
+                Margin="0,10,0,10"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <!-- Your existing buttons (Refresh, Send Mail, Log out) remain the same -->
+            
+            <Button
                     Width="120"
                     Margin="0,0,10,0"
                     Background="#fee2bc"
