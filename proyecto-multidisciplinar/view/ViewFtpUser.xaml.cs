@@ -778,7 +778,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         botonesDirectorio.Add(new Button()
        {
             Content = "Create Directory",
-            Width = 100,
+            Width = 130,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -789,6 +789,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         botonesDirectorio.Add(new Button()
        {
             Content = "Delete Directory",
+            Width = 130,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -799,6 +800,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         botonesDirectorio.Add(new Button()
         {
             Content = "Manage access",
+            Width = 130,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),

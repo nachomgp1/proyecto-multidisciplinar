@@ -37,7 +37,7 @@
                 Background="#FAD6A5"
                 BorderThickness="0"
                 Click="AccionArchivos"
-                Content="Gestion Archivos"
+                Content="File Management"
                 FontSize="14"
                 FontWeight="Bold"
                 Foreground="Black" />
@@ -48,7 +48,7 @@
                 Background="#FAD6A5"
                 BorderThickness="0"
                 Click="AccionDirectorio"
-                Content="Gestion Directorio"
+                Content="Directory Management"
                 FontSize="14"
                 FontWeight="Bold"
                 Foreground="Black" />
@@ -59,7 +59,7 @@
                 Background="#FAD6A5"
                 BorderThickness="0"
                 Click="AccionConsultas"
-                Content="Consultas"
+                Content="Consultations"
                 FontSize="14"
                 FontWeight="Bold"
                 Foreground="Black" />
@@ -69,7 +69,7 @@
                 Background="#FAD6A5"
                 BorderThickness="0"
                 Click="AccionAlmacenamiento"
-                Content="Almacenamiento"
+                Content="Storage"
                 FontSize="14"
                 FontWeight="Bold"
                 Foreground="Black" />
@@ -79,7 +79,7 @@
                 Background="#FAD6A5"
                 BorderThickness="0"
                 Click="AccionPermisos"
-                Content="Gestion Permisos"
+                Content="Permissions Management"
                 FontSize="14"
                 FontWeight="Bold"
                 Foreground="Black" />

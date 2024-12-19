@@ -81,7 +81,7 @@ public partial class ViewFtpAdmin : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error al cargar la jerarquía: {ex.Message}");
+            MessageBox.Show($"Error loading hierarchy: {ex.Message}");
         }
     }
     
@@ -100,7 +100,7 @@ public partial class ViewFtpAdmin : Window
     // Crear la etiqueta para el ComboBox de grupo
     Label grupoLabel = new Label
     {
-        Content = "Selecciona un Usuario/Grupo",
+        Content = "Select a User/Group",
         Margin = new Thickness(10)
     };
 
@@ -128,18 +128,18 @@ public partial class ViewFtpAdmin : Window
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error al ejecutar el sql -> Error:{ex.Message}");
+            Console.WriteLine($"Error executing sql -> Error:{ex.Message}");
         }
 
     }catch(Exception ex)
     {
-        Console.WriteLine($"No se ha podido conectar -> Error:{ex.Message}");
+        Console.WriteLine($"Could not connect -> Error:{ex.Message}");
     }
     
     // Crear la etiqueta para el ComboBox de carpetas
     Label carpetaLabel = new Label
     {
-        Content = "Selecciona una Carpeta",
+        Content = "Select a Folder",
         Margin = new Thickness(10)
     };
 
@@ -165,7 +165,7 @@ public partial class ViewFtpAdmin : Window
     // Crear Button para asignar permisos
     Button asignarPermisosButton = new Button
     {
-        Content = "Asignar Permisos",
+        Content = "Assign Permissions",
         Width = 200,
         Margin = new Thickness(10)
     };
@@ -196,12 +196,12 @@ public partial class ViewFtpAdmin : Window
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error al ejecutar el sql -> Error:{ex.Message}");
+                    Console.WriteLine($"Error executing sql -> Error:{ex.Message}");
                 }
 
             }catch(Exception ex)
             {
-                Console.WriteLine($"No se ha podido conectar -> Error:{ex.Message}");
+                Console.WriteLine($"Could not connect -> Error:{ex.Message}");
             }
         }
     };
@@ -235,17 +235,17 @@ public partial class ViewFtpAdmin : Window
     // Agregar columnas al DataGrid
     dataGrid.Columns.Add(new DataGridTextColumn
     {
-        Header = "Carpeta",
+        Header = "File",
         Binding = new Binding("Carpeta")
     });
     dataGrid.Columns.Add(new DataGridTextColumn
     {
-        Header = "Espacio Usado (MB)",
+        Header = "Used Space (MB)",
         Binding = new Binding("EspacioUsado")
     });
     dataGrid.Columns.Add(new DataGridTextColumn
     {
-        Header = "Límite (MB)",
+        Header = "Limit (MB)",
         Binding = new Binding("Limite")
     });
 
@@ -268,7 +268,7 @@ public partial class ViewFtpAdmin : Window
             // Crear alerta si se excede el 90% de la cuota
             if (espacioUsado > limite * 0.9)
             {
-                MessageBox.Show($"Alerta: La carpeta {carpeta} ha superado el 90% de su cuota.");
+                MessageBox.Show($"Alert: The folder {carpeta} has exceeded 90% of its quota.");
             }
 
             // Agregar los datos a la lista
@@ -306,7 +306,7 @@ public partial class ViewFtpAdmin : Window
 
         Button modificarLimiteButton = new Button
         {
-            Content = "Modificar Límite",
+            Content = "Modify Limit",
             Width = 150,
             Margin = new Thickness(10)
         };
@@ -319,11 +319,11 @@ public partial class ViewFtpAdmin : Window
             {
                 long newLimitBytes = newLimitMB * 1024 * 1024;  // Convertir a bytes
                 ftp.ModificarLimite(selectedFolder, newLimitBytes); // Llamar al método de FTP para modificar el límite
-                MessageBox.Show($"El límite para la carpeta {selectedFolder} ha sido modificado a {newLimitMB} MB.");
+                MessageBox.Show($"The limit for the folder {selectedFolder} has been modified to {newLimitMB} MB.");
             }
             else
             {
-                MessageBox.Show("Por favor, ingrese un límite válido.");
+                MessageBox.Show("Please enter a valid limit.");
             }
         };
 
@@ -338,7 +338,7 @@ public partial class ViewFtpAdmin : Window
     }
     catch (Exception ex)
     {
-        MessageBox.Show($"Error al gestionar el espacio: {ex.Message}");
+        MessageBox.Show($"Error managing space: {ex.Message}");
     }
     }
     
@@ -367,7 +367,7 @@ public partial class ViewFtpAdmin : Window
 
     Label directorioLabel = new Label()
     {
-        Content = "Directorio FTP:",
+        Content = "FTP Directory:",
         Margin = new Thickness(10)
     };
 
@@ -388,20 +388,20 @@ public partial class ViewFtpAdmin : Window
 
     Label ficheroLabel = new Label()
     {
-        Content = "Archivo a Subir:",
+        Content = "File to Upload:",
         Margin = new Thickness(10)
     };
 
     Button seleccionarArchivoButton = new Button()
     {
-        Content = "Seleccionar Archivo",
+        Content = "Select File",
         Width = 150,
         Margin = new Thickness(10)
     };
 
     TextBlock archivoSeleccionado = new TextBlock()
     {
-        Text = "Ningún archivo seleccionado",
+        Text = "No file selected",
         Margin = new Thickness(10)
     };
 
@@ -410,8 +410,8 @@ public partial class ViewFtpAdmin : Window
     {
         Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog
         {
-            Title = "Seleccionar archivo para subir",
-            Filter = "Todos los archivos (*.*)|*.*"
+            Title = "Select file to upload",
+            Filter = "All files (*.*)|*.*"
         };
 
         if (openFileDialog.ShowDialog() == true)
@@ -422,7 +422,7 @@ public partial class ViewFtpAdmin : Window
 
     Button subirButton = new Button()
     {
-        Content = "Subir Archivo",
+        Content = "Upload File",
         Width = 150,
         Margin = new Thickness(10)
     };
@@ -438,17 +438,17 @@ public partial class ViewFtpAdmin : Window
             try
             {
                 ftp.UploadFile(localFilePath, $"{selectedDirectory}/{Path.GetFileName(localFilePath)}");
-                MessageBox.Show("Archivo subido correctamente.");
+                MessageBox.Show("File uploaded successfully.");
                 Logs.InsertLogs(username, "Upload file", currentDate, userIp, email);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al subir el archivo: {ex.Message}");
+                MessageBox.Show($"Error uploading file: {ex.Message}");
             }
         }
         else
         {
-            MessageBox.Show("Por favor, selecciona un directorio y un archivo válido.");
+            MessageBox.Show("Please select a valid directory and file.");
         }
     };
 
@@ -469,7 +469,7 @@ public partial class ViewFtpAdmin : Window
         // Crear controles dinámicos para la funcionalidad
         Label archivoLabel = new Label()
         {
-            Content = "Archivo a Descargar:",
+            Content = "File to Download:",
             Margin = new Thickness(10)
         };
 
@@ -489,7 +489,7 @@ public partial class ViewFtpAdmin : Window
 
         Button descargarButton = new Button()
         {
-            Content = "Descargar Archivo",
+            Content = "Download File",
             Width = 150,
             Margin = new Thickness(10)
         };
@@ -504,19 +504,19 @@ public partial class ViewFtpAdmin : Window
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     FileName = selectedArchivo,
-                    Filter = "Todos los archivos|*.*"
+                    Filter = "All files |*.*"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string localPath = saveFileDialog.FileName;
                     ftp.DownloadFile(selectedArchivo, localPath);
-                    MessageBox.Show("Archivo descargado correctamente.");
+                    MessageBox.Show("File downloaded successfully.");
                 }
             }
             else
             {
-                MessageBox.Show("Por favor, selecciona un archivo.");
+                MessageBox.Show("Please select a file.");
             }
         };
 
@@ -535,7 +535,7 @@ public partial class ViewFtpAdmin : Window
 
         Label archivoLabel = new Label()
         {
-            Content = "Archivo a Eliminar:",
+            Content = "File to Delete:",
             Margin = new Thickness(10)
         };
 
@@ -555,7 +555,7 @@ public partial class ViewFtpAdmin : Window
 
         Button eliminarButton = new Button()
         {
-            Content = "Eliminar Archivo",
+            Content = "Delete File",
             Width = 100,
             Margin = new Thickness(10)
         };
@@ -567,11 +567,11 @@ public partial class ViewFtpAdmin : Window
             if (!string.IsNullOrEmpty(selectedArchivo))
             {
                 ftp.DeleteFile(selectedArchivo);
-                MessageBox.Show("Archivo eliminado correctamente.");
+                MessageBox.Show("File deleted successfully.");
             }
             else
             {
-                MessageBox.Show("Por favor, selecciona un archivo.");
+                MessageBox.Show("Please select a file.");
             }
         };
 
@@ -588,7 +588,7 @@ public partial class ViewFtpAdmin : Window
     // Crear controles dinámicos para la funcionalidad de renombrar
     Label archivoLabel = new Label()
     {
-        Content = "Archivo a Renombrar:",
+        Content = "File to Rename:",
         Margin = new Thickness(10)
     };
 
@@ -610,7 +610,7 @@ public partial class ViewFtpAdmin : Window
     // Crear el campo de texto para el nuevo nombre del archivo
     Label nuevoNombreLabel = new Label()
     {
-        Content = "Nuevo Nombre:",
+        Content = "New Name:",
         Margin = new Thickness(10)
     };
 
@@ -623,7 +623,7 @@ public partial class ViewFtpAdmin : Window
     // Crear el botón de "Renombrar"
     Button renombrarButton = new Button()
     {
-        Content = "Renombrar Archivo",
+        Content = "Rename File",
         Width = 150,
         Margin = new Thickness(10)
     };
@@ -641,16 +641,16 @@ public partial class ViewFtpAdmin : Window
                 // Renombrar el archivo en el servidor FTP
                 string nuevoArchivoPath = Path.Combine(Path.GetDirectoryName(selectedArchivo), nuevoNombre);
                 ftp.RenameFile(selectedArchivo, nuevoArchivoPath);
-                MessageBox.Show("Archivo renombrado correctamente.");
+                MessageBox.Show("File renamed successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al renombrar el archivo: {ex.Message}");
+                MessageBox.Show($"Error renaming file: {ex.Message}");
             }
         }
         else
         {
-            MessageBox.Show("Por favor, selecciona un archivo y proporciona un nuevo nombre.");
+            MessageBox.Show("Please select a file and provide a new name.");
         }
     };
 
@@ -676,7 +676,7 @@ public partial class ViewFtpAdmin : Window
     // Crear controles dinámicos para la funcionalidad de crear carpeta
     Label rutaLabel = new Label()
     {
-        Content = "Seleccionar Ruta:",
+        Content = "Select Route:",
         Margin = new Thickness(10)
     };
 
@@ -698,7 +698,7 @@ public partial class ViewFtpAdmin : Window
     // Crear el campo de texto para el nuevo nombre de la carpeta
     Label nuevoNombreLabel = new Label()
     {
-        Content = "Nuevo Nombre de Carpeta:",
+        Content = "New Folder Name:",
         Margin = new Thickness(10)
     };
 
@@ -711,7 +711,7 @@ public partial class ViewFtpAdmin : Window
     // Crear el botón de "Crear Carpeta"
     Button crearCarpetaButton = new Button()
     {
-        Content = "Crear Carpeta",
+        Content = "Create Folder",
         Width = 150,
         Margin = new Thickness(10)
     };
@@ -729,11 +729,11 @@ public partial class ViewFtpAdmin : Window
                 // Crear la carpeta en el servidor FTP
                 string nuevaRuta = Path.Combine(rutaSeleccionada, nuevaCarpeta);
                 ftp.CreateDirectory(nuevaRuta);
-                MessageBox.Show("Carpeta creada correctamente.");
+                MessageBox.Show("Folder created successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al crear la carpeta: {ex.Message}");
+                MessageBox.Show($"Error creating folder: {ex.Message}");
             }
         }
         else if (!string.IsNullOrEmpty(rutaSeleccionada))
@@ -744,16 +744,16 @@ public partial class ViewFtpAdmin : Window
                 rutaSeleccionada = "/";
                 string nuevaRuta = Path.Combine(rutaSeleccionada, nuevaCarpeta);
                 ftp.CreateDirectory(nuevaRuta);
-                MessageBox.Show("Carpeta creada correctamente.");
+                MessageBox.Show("Folder created successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al crear la carpeta: {ex.Message}");
+                MessageBox.Show($"Error creating folder: {ex.Message}");
             }
         }
         else
         {
-            MessageBox.Show("Por favor, selecciona una ruta y proporciona un nombre para la carpeta.");
+            MessageBox.Show("Please select a path and provide a name for the folder.");
 
         }
     };
@@ -777,7 +777,7 @@ public partial class ViewFtpAdmin : Window
     // Etiqueta para seleccionar la ruta base
     Label rutaLabel = new Label()
     {
-        Content = "Seleccionar Ruta Base:",
+        Content = "Select Main Route:",
         Margin = new Thickness(10)
     };
 
@@ -790,7 +790,7 @@ public partial class ViewFtpAdmin : Window
     // Etiqueta para seleccionar la carpeta dentro de la ruta
     Label carpetaLabel = new Label()
     {
-        Content = "Seleccionar Carpeta a Eliminar:",
+        Content = "Select Folder to Delete:",
         Margin = new Thickness(10)
     };
 
@@ -803,7 +803,7 @@ public partial class ViewFtpAdmin : Window
     // Botón para eliminar la carpeta
     Button eliminarCarpetaButton = new Button()
     {
-        Content = "Eliminar Carpeta",
+        Content = "Delete Folder",
         Width = 150,
         Margin = new Thickness(10)
     };
@@ -852,25 +852,25 @@ public partial class ViewFtpAdmin : Window
 
                 if (archivosEnCarpeta.Count > 0)
                 {
-                    MessageBox.Show($"No se puede eliminar la carpeta '{carpetaSeleccionada}' porque no está vacía.");
+                    MessageBox.Show($"Cannot delete folder '{carpetaSeleccionada}' because it is not empty.");
                     return;
                 }
 
                 // Eliminar la carpeta en el servidor FTP
                 ftp.DeleteDirectory(carpetaCompleta);
-                MessageBox.Show("Carpeta eliminada correctamente.");
+                MessageBox.Show("Folder deleted successfully.");
 
                 // Actualizar el ComboBox de carpetas eliminando la carpeta eliminada
                 carpetaComboBox.Items.Remove(carpetaSeleccionada);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar la carpeta: {ex.Message}");
+                MessageBox.Show($"Error deleting folder: {ex.Message}");
             }
         }
         else
         {
-            MessageBox.Show("Por favor, selecciona una ruta y una carpeta para eliminar.");
+            MessageBox.Show("Please select a path and folder to delete.");
         }
     };
 
@@ -892,7 +892,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
     // Etiqueta para seleccionar la ruta base
     Label rutaLabel = new Label()
     {
-        Content = "Seleccionar Ruta Base:",
+        Content = "Select Main Route:",
         Margin = new Thickness(10)
     };
 
@@ -905,7 +905,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
     // Etiqueta para mostrar los permisos
     Label permisosLabel = new Label()
     {
-        Content = "Permisos de Carpetas:",
+        Content = "Folder Permissions:",
         Margin = new Thickness(10)
     };
 
@@ -919,7 +919,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
     // Botón para consultar los permisos
     Button consultarPermisosButton = new Button()
     {
-        Content = "Consultar Permisos",
+        Content = "Check Permissions",
         Width = 150,
         Margin = new Thickness(10)
     };
@@ -942,16 +942,16 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
 
             if (string.IsNullOrEmpty(rutaBase))
             {
-                MessageBox.Show("Por favor, seleccione una ruta.");
+                MessageBox.Show("Please select a route.");
                 return;
             }
             
                 // Agregar los permisos al ListBox para mostrar
-                permisosListBox.Items.Add($"Carpeta: {rutaBase} - Tienes permiso de administrador");
+                permisosListBox.Items.Add($"Folder: {rutaBase} - You have administrator permission");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error al verificar los permisos: {ex.Message}");
+            MessageBox.Show($"Error checking permissions: {ex.Message}");
         }
     };
 
@@ -973,7 +973,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
     {
        botones.Add(new Button()
         {
-            Content = "Subir archivo",
+            Content = "Upload file",
             Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
@@ -984,7 +984,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         });
         botones.Add(new Button()
         {
-            Content = "Descargar archivos",
+            Content = "Download files",
             Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
@@ -995,7 +995,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         });
         botones.Add(new Button()
         {
-            Content = "Eliminar archivos",
+            Content = "Delete files",
             Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
@@ -1006,7 +1006,7 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         });
         botones.Add(new Button()
         {
-            Content = "Renombrar",
+            Content = "Rename",
             Width = 120,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
@@ -1041,8 +1041,8 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
     {
         botonesDirectorio.Add(new Button()
         {
-            Content = "Crear Directorio",
-            Width = 100,
+            Content = "Create Directory",
+            Width = 130,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -1052,7 +1052,8 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         });
         botonesDirectorio.Add(new Button()
         {
-            Content = "Eliminar Directorio",
+            Content = "Delete Directory",
+            Width = 130,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
@@ -1062,7 +1063,8 @@ public void AccionAccesoCarpeta(object sender, RoutedEventArgs e)
         });
         botonesDirectorio.Add(new Button()
         {
-            Content = "Gestion acceso",
+            Content = "Access management",
+            Width = 130,
             Margin = new Thickness(10, 0, 10, 0),
             Background = new SolidColorBrush(Color.FromRgb(250, 214, 165)), // "#FAD6A5" convertido a RGB
             Foreground = new SolidColorBrush(Colors.Black),
