@@ -27,8 +27,9 @@ namespace proyecto_multidisciplinar.view
         private Window ventanaAnterior;
         private string? username;
         private Dictionary<string, bool> emailReadStatus = new Dictionary<string, bool>();
+        private Stack<string> pageTokenHistory = new Stack<string>(); 
+        private string currentPageToken;  
         private string nextPageToken;
-        private string previousPageToken;
         private const int PAGE_SIZE = 25;
 
         public EmailsWindow(GmailService service, UserCredential userCredential, Window ventanaAnterior, string? username)
@@ -51,95 +52,33 @@ namespace proyecto_multidisciplinar.view
             }
             this.Close();
         }
-        private async void CargarCorreos(string pageToken = null)
+        private async void CargarCorreos(string pageToken = null, bool isNextPage = false)
         {
-            try
-            {
-                emailListView.Visibility = Visibility.Collapsed;
-                loadingImage.Visibility = Visibility.Visible;
-                nextButton.IsEnabled = false;
-                previousButton.IsEnabled = false;
-
-                var request = gmailService.Users.Messages.List("me");
-                request.MaxResults = PAGE_SIZE;
-                if (pageToken != null)
-                {
-                    request.PageToken = pageToken;
-                }
-
-                var response = await request.ExecuteAsync();
-
-                // Store tokens for navigation
-                nextPageToken = response.NextPageToken;
-                previousPageToken = pageToken; // Store current token as previous
-
-                // Update navigation buttons
-                nextButton.IsEnabled = !string.IsNullOrEmpty(nextPageToken);
-                previousButton.IsEnabled = !string.IsNullOrEmpty(previousPageToken);
-
-                if (response.Messages != null)
-                {
-                    var emailList = new List<EmailItem>();
-                    foreach (var message in response.Messages)
-                    {
-                        var emailRequest = gmailService.Users.Messages.Get("me", message.Id);
-                        var email = await emailRequest.ExecuteAsync();
-
-                        var headers = email.Payload.Headers;
-                        string subject = headers.FirstOrDefault(h => h.Name == "Subject")?.Value ?? "Sin asunto";
-                        string from = headers.FirstOrDefault(h => h.Name == "From")?.Value ?? "Desconocido";
-                        string dateHeader = headers.FirstOrDefault(h => h.Name == "Date")?.Value;
-
-                        string dateTime = "Fecha desconocida";
-                        if (DateTime.TryParse(dateHeader, out DateTime date))
-                        {
-                            dateTime = date.ToString("yyyy-MM-dd HH:mm");
-                        }
-
-                        bool isRead = emailReadStatus.ContainsKey(message.Id) && emailReadStatus[message.Id];
-
-                        emailList.Add(new EmailItem
-                        {
-                            MessageId = message.Id,
-                            From = from,
-                            Hour = dateTime,
-                            Subject = subject,
-                            IsRead = isRead
-                        });
-                    }
-
-                    emailListView.ItemsSource = emailList;
-                }
-                else
-                {
-                    MessageBox.Show("No se encontraron correos.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar correos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                loadingImage.Visibility = Visibility.Collapsed;
-                emailListView.Visibility = Visibility.Visible;
-            }
+            await CargarCorreosAsync(pageToken, isNextPage);
         }
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(nextPageToken))
             {
-                CargarCorreos(nextPageToken);
+                _ = CargarCorreosAsync(nextPageToken, true);
             }
         }
 
         private void PreviousPage_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(previousPageToken))
+            if (pageTokenHistory.Count > 0)
             {
-                CargarCorreos(previousPageToken);
+                // Tomar el token previo y cargar los correos
+                string previousToken = pageTokenHistory.Pop();
+                _ = CargarCorreosAsync(previousToken, false);
+            }
+            else
+            {
+                // Si no hay tokens previos, simplemente recargamos la primera página
+                _ = CargarCorreosAsync(null, false);
             }
         }
+
 
         private async void EliminarCorreo_Click(object sender, RoutedEventArgs e)
         {
@@ -197,7 +136,6 @@ namespace proyecto_multidisciplinar.view
             var selectedEmail = emailListView.SelectedItem as EmailItem;
             if (selectedEmail == null) return;
 
-            // Update the read status in our dictionary
             emailReadStatus[selectedEmail.MessageId] = true;
             selectedEmail.IsRead = true;
 
@@ -250,7 +188,7 @@ namespace proyecto_multidisciplinar.view
 
 
 
-        private async Task CargarCorreosAsync(string pageToken = null)
+        private async Task CargarCorreosAsync(string pageToken = null, bool isNextPage = false)
         {
             try
             {
@@ -271,9 +209,16 @@ namespace proyecto_multidisciplinar.view
 
                 var response = await request.ExecuteAsync();
 
-                // Store tokens for navigation
+                // Manejar el historial de navegación
+                if (isNextPage)
+                {
+                    if (currentPageToken != null)
+                    {
+                        pageTokenHistory.Push(currentPageToken);
+                    }
+                }
+                currentPageToken = pageToken;
                 nextPageToken = response.NextPageToken;
-                previousPageToken = pageToken;
 
                 var emailList = new List<EmailItem>();
 
@@ -312,7 +257,7 @@ namespace proyecto_multidisciplinar.view
                 {
                     emailListView.ItemsSource = emailList;
                     nextButton.IsEnabled = !string.IsNullOrEmpty(nextPageToken);
-                    previousButton.IsEnabled = !string.IsNullOrEmpty(previousPageToken);
+                    previousButton.IsEnabled = true;
 
                     foreach (EmailItem item in emailList)
                     {
