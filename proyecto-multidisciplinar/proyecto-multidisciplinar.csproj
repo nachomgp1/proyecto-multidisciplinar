@@ -7,6 +7,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <UserSecretsId>2d2c5f42-dd57-4313-b9ed-b3c6c63a8e06</UserSecretsId>
+    <ApplicationIcon>images/Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
