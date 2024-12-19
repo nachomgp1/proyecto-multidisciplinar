@@ -26,7 +26,7 @@ namespace proyecto_multidisciplinar.view
         private UserCredential credential;
         private Window ventanaAnterior;
         private string? username;
-
+        private Dictionary<string, bool> emailReadStatus = new Dictionary<string, bool>();
         public EmailsWindow(GmailService service, UserCredential userCredential, Window ventanaAnterior, string? username)
         {
             this.username = username;
@@ -51,13 +51,13 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-               
+
                 emailListView.Visibility = Visibility.Collapsed;
                 loadingImage.Visibility = Visibility.Visible;
 
-              
+
                 var request = gmailService.Users.Messages.List("me");
-                request.MaxResults = 50; 
+                request.MaxResults = 50;
                 var response = await request.ExecuteAsync();
 
                 if (response.Messages != null)
@@ -68,7 +68,7 @@ namespace proyecto_multidisciplinar.view
                         var emailRequest = gmailService.Users.Messages.Get("me", message.Id);
                         var email = await emailRequest.ExecuteAsync();
 
-                        
+
                         var headers = email.Payload.Headers;
                         string subject = headers.FirstOrDefault(h => h.Name == "Subject")?.Value ?? "Sin asunto";
                         string from = headers.FirstOrDefault(h => h.Name == "From")?.Value ?? "Desconocido";
@@ -77,7 +77,7 @@ namespace proyecto_multidisciplinar.view
                         string dateTime = "Fecha desconocida";
                         if (DateTime.TryParse(dateHeader, out DateTime date))
                         {
-                            dateTime = date.ToString("yyyy-MM-dd HH:mm"); 
+                            dateTime = date.ToString("yyyy-MM-dd HH:mm");
                         }
 
                         emailList.Add(new EmailItem
@@ -90,14 +90,14 @@ namespace proyecto_multidisciplinar.view
                         });
                     }
 
-                    
+
                     emailListView.ItemsSource = emailList;
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                   
+
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
                     MessageBox.Show("No se encontraron correos.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -105,7 +105,7 @@ namespace proyecto_multidisciplinar.view
             }
             catch (Exception ex)
             {
-            
+
                 loadingImage.Visibility = Visibility.Collapsed;
                 emailListView.Visibility = Visibility.Visible;
 
@@ -118,14 +118,14 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-            
+
                 var button = sender as Button;
                 if (button == null) return;
 
                 string messageId = button.CommandParameter as string;
                 if (string.IsNullOrEmpty(messageId)) return;
 
-             
+
                 var result = MessageBox.Show("¿Está seguro que desea eliminar este correo?",
                     "Confirmar Eliminación",
                     MessageBoxButton.YesNo,
@@ -133,10 +133,10 @@ namespace proyecto_multidisciplinar.view
 
                 if (result == MessageBoxResult.Yes)
                 {
-                  
+
                     await gmailService.Users.Messages.Delete("me", messageId).ExecuteAsync();
 
-                
+
                     await CargarCorreosAsync();
                 }
             }
@@ -148,7 +148,7 @@ namespace proyecto_multidisciplinar.view
 
         private void EnviarCorreo_Click(object sender, RoutedEventArgs e)
         {
-          
+
             EnviarCorreoWindow enviarCorreoWindow = new EnviarCorreoWindow(gmailService, this.username);
             enviarCorreoWindow.Show();
         }
@@ -167,35 +167,31 @@ namespace proyecto_multidisciplinar.view
         }
         private void EmailListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-       
             var selectedEmail = emailListView.SelectedItem as EmailItem;
             if (selectedEmail == null) return;
 
-         
+            // Update the read status in our dictionary
+            emailReadStatus[selectedEmail.MessageId] = true;
             selectedEmail.IsRead = true;
-            emailListView.Items.Refresh();
 
-           
-            var emailDetailsWindow = new EmailDetailsWindow(gmailService, selectedEmail.MessageId);
-            emailDetailsWindow.Show();
-
-           
             var itemContainer = emailListView.ItemContainerGenerator.ContainerFromItem(selectedEmail) as ListViewItem;
             if (itemContainer != null)
             {
-              
                 var noLeidoButton = FindNoLeidoButtonInRow(itemContainer);
                 if (noLeidoButton != null)
                 {
-                        noLeidoButton.Content = "Leído";
+                    noLeidoButton.Content = "Leído";
                 }
             }
+
+            var emailDetailsWindow = new EmailDetailsWindow(gmailService, selectedEmail.MessageId);
+            emailDetailsWindow.Show();
         }
 
-     
+
         private Button FindNoLeidoButtonInRow(ListViewItem itemContainer)
         {
-          
+
             var stackPanel = FindVisualChild<StackPanel>(itemContainer);
             if (stackPanel != null)
             {
@@ -205,25 +201,25 @@ namespace proyecto_multidisciplinar.view
         }
 
 
-     
-        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-{
-    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-    {
-        var child = VisualTreeHelper.GetChild(parent, i);
-        if (child is T)
-        {
-            return (T)child;
-        }
 
-        var result = FindVisualChild<T>(child);
-        if (result != null)
+        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
         {
-            return result;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T)
+                {
+                    return (T)child;
+                }
+
+                var result = FindVisualChild<T>(child);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
         }
-    }
-    return null;
-}
 
 
 
@@ -231,14 +227,12 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-            
                 Dispatcher.Invoke(() =>
                 {
                     emailListView.Visibility = Visibility.Collapsed;
                     loadingImage.Visibility = Visibility.Visible;
                 });
 
-             
                 var request = gmailService.Users.Messages.List("me");
                 request.MaxResults = 50;
                 var response = await request.ExecuteAsync();
@@ -252,7 +246,6 @@ namespace proyecto_multidisciplinar.view
                         var emailRequest = gmailService.Users.Messages.Get("me", message.Id);
                         var email = await emailRequest.ExecuteAsync();
 
-                       
                         var headers = email.Payload.Headers;
                         string subject = headers.FirstOrDefault(h => h.Name == "Subject")?.Value ?? "Sin asunto";
                         string from = headers.FirstOrDefault(h => h.Name == "From")?.Value ?? "Desconocido";
@@ -261,25 +254,41 @@ namespace proyecto_multidisciplinar.view
                         string dateTime = "Fecha desconocida";
                         if (DateTime.TryParse(dateHeader, out DateTime date))
                         {
-                            dateTime = date.ToString("yyyy-MM-dd HH:mm"); 
+                            dateTime = date.ToString("yyyy-MM-dd HH:mm");
                         }
+
+                        // Check if we have a stored read status for this message
+                        bool isRead = emailReadStatus.ContainsKey(message.Id) && emailReadStatus[message.Id];
 
                         emailList.Add(new EmailItem
                         {
                             MessageId = message.Id,
                             From = from,
                             Hour = dateTime,
-                            Subject = subject
+                            Subject = subject,
+                            IsRead = isRead
                         });
                     }
                 }
 
-                
                 Dispatcher.Invoke(() =>
                 {
                     emailListView.ItemsSource = emailList;
 
-                
+                    // Update button states after setting ItemsSource
+                    foreach (EmailItem item in emailList)
+                    {
+                        var container = emailListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+                        if (container != null)
+                        {
+                            var button = FindNoLeidoButtonInRow(container);
+                            if (button != null)
+                            {
+                                button.Content = item.IsRead ? "Leído" : "No Leído";
+                            }
+                        }
+                    }
+
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
                 });
@@ -288,10 +297,8 @@ namespace proyecto_multidisciplinar.view
             {
                 Dispatcher.Invoke(() =>
                 {
-                  
                     loadingImage.Visibility = Visibility.Collapsed;
                     emailListView.Visibility = Visibility.Visible;
-
                     MessageBox.Show($"Error al actualizar correos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 });
             }
@@ -301,10 +308,10 @@ namespace proyecto_multidisciplinar.view
         {
             try
             {
-              
+
                 await credential.RevokeTokenAsync(CancellationToken.None);
 
-             
+
                 string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".credentials/gmail-wpf-quickstart");
                 if (Directory.Exists(folderPath))
                 {
@@ -328,18 +335,14 @@ namespace proyecto_multidisciplinar.view
                 return;
 
             var messageId = button.CommandParameter.ToString();
-            MessageBox.Show($"Correo {messageId} marcado como no leído");
-      
-            if (button.Content.ToString() == "Leído")
-            {
-                button.Content = "No Leído";
-            }
-            else
-            {
-                button.Content = "Leído";
-            }
+            var isCurrentlyRead = button.Content.ToString() == "Leído";
+
+            // Update the read status in our dictionary
+            emailReadStatus[messageId] = !isCurrentlyRead;
+
+            // Update button text
+            button.Content = isCurrentlyRead ? "No Leído" : "Leído";
         }
-
-
     }
+
 }
