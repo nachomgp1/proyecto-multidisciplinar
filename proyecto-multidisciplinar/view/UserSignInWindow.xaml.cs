@@ -169,8 +169,7 @@ namespace proyecto_multidisciplinar
                 conexion.AbrirConexion();
                 string insertFolder = "INSERT INTO \"Folders\" (name, \"acces_user\") VALUES (@user, @user)";
                 conexion.EjecutarNonQuery(insertFolder,
-                    new NpgsqlParameter("@user", user),
-                    new NpgsqlParameter("@email", email));
+                    new NpgsqlParameter("@user", user));
                 conexion.CerrarConexion();
 
                 if (userType == "2")
@@ -184,7 +183,7 @@ namespace proyecto_multidisciplinar
                     }
 
                     string queryEmail = @"SELECT ""name"" FROM ""Groups"" WHERE id = @id;";
-                    using (var reader = conexion.EjecutarConsulta(checkUserQuery, new NpgsqlParameter("@id", userGroup)))
+                    using (var reader = conexion.EjecutarConsulta(queryEmail, new NpgsqlParameter("@id", userGroup)))
                     {
                         while(reader.Read())
                         {
