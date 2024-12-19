@@ -11,6 +11,7 @@ using proyecto_multidisciplinar.view;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using static System.Net.WebRequestMethods;
+using System.Diagnostics;
 
 namespace proyecto_multidisciplinar
 {
@@ -157,10 +158,51 @@ namespace proyecto_multidisciplinar
                 viewFtpAdmin.createDirectory("/", user);
 
 
+
                 string whitelistQuery = @"INSERT INTO ""Whitelist"" (email) VALUES (@Email);";
                 conexion.EjecutarNonQuery(whitelistQuery, new NpgsqlParameter("@Email", email));
-                
 
+
+
+                conexion.CerrarConexion();
+
+                conexion.AbrirConexion();
+                string insertFolder = "INSERT INTO \"Folders\" (name, \"acces_user\") VALUES (@user, @user)";
+                conexion.EjecutarNonQuery(insertFolder,
+                    new NpgsqlParameter("@user", user),
+                    new NpgsqlParameter("@email", email));
+                conexion.CerrarConexion();
+
+                if (userType == "2")
+                {
+
+                    string groupName="";
+                    if (!conexion.AbrirConexion())
+                    {
+                        MessageBox.Show("Error al abrir la conexión.");
+                        return;
+                    }
+
+                    string queryEmail = @"SELECT ""name"" FROM ""Groups"" WHERE id = @id;";
+                    using (var reader = conexion.EjecutarConsulta(checkUserQuery, new NpgsqlParameter("@id", userGroup)))
+                    {
+                        while(reader.Read())
+                        {
+                           groupName += reader.GetString(0);
+                        }
+                        reader.Close();
+                    }
+                    conexion.CerrarConexion();
+                    Debug.WriteLine(groupName);
+                    conexion.AbrirConexion();
+                    string insertFolderGroup = @"INSERT INTO ""Folders"" (""name"", ""acces_user"") VALUES (@userGroup, @user)";
+                    conexion.EjecutarNonQuery(insertFolderGroup,
+                        new NpgsqlParameter("@userGroup", groupName),
+                        new NpgsqlParameter("@user", user));
+                    conexion.CerrarConexion();
+                    Debug.WriteLine("No se puede insertar");
+
+                }
                 sendAcction("Successfully sign-in");
             }
             catch (Exception ex)
@@ -170,7 +212,7 @@ namespace proyecto_multidisciplinar
             finally
             {
                 
-                conexion.CerrarConexion();
+                
                 PrincipalMenuAdmin viewAdmid = new PrincipalMenuAdmin(adminUser);
                 this.Close();
                 viewAdmid.Show();
